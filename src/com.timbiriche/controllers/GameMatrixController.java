@@ -28,7 +28,7 @@ public class GameMatrixController
 
     public void completeGameMatrix(){
         int boxId = 1;
-        this.boxController = new BoxController();
+        this.boxController = new BoxController( this.gameMatrix.getMatrix() );
         for ( int row = 0; row <this.gameMatrix.getMatrix().length ; row++ )
         {
             for ( int col = 0; col <this.gameMatrix.getMatrix()[row].length ; col++, boxId++ )
@@ -37,7 +37,6 @@ public class GameMatrixController
             }
         }
     }
-
     public void printGameMatrix(){
         for ( int row = 0; row <this.gameMatrix.getMatrix().length ; row++ )
         {
@@ -50,5 +49,20 @@ public class GameMatrixController
 
     }
 
+    public int getLeftPosition( int row, int col){
+        return this.boxController.searchLeftBox( row, col );
+    }
+
+    public int getRightPosition( int row, int col){
+        return this.boxController.searchRightBox( row, col );
+    }
+
+    public int getUpperPosition( int row, int col){
+        return this.boxController.searchUpBox( row, col );
+    }
+
+    public int getBelowPosition( int row, int col){
+        return this.boxController.searchDownBox( row, col );
+    }
 
 }
