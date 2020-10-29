@@ -1,6 +1,7 @@
 package com.timbiriche.controllers;
 
 import com.timbiriche.models.Box;
+import com.timbiriche.models.Player;
 
 /**
  * @author nchaverri
@@ -126,6 +127,21 @@ public class BoxController
         return null;
     }
 
+    public int boxesByPlayer( Player player ){
+
+        int boxesByPlayer = 0;
+        for ( int row = 0; row <this.boxMatrix.length ; row++ )
+        {
+            for ( int col = 0; col <boxMatrix[row].length ; col++)
+            {
+                if ( this.boxMatrix[row][col].getAssignee().getPlayerInitials().equals( player.getPlayerInitials() ) ){
+                    boxesByPlayer ++;
+                }
+            }
+        }
+        return boxesByPlayer;
+    }
+
     public int getLeftPosition( int row, int col){
         return this.searchLeftBox( row, col );
     }
@@ -140,10 +156,6 @@ public class BoxController
 
     public int getBelowPosition( int row, int col){
         return this.searchDownBox( row, col );
-    }
-
-    public int getMarkedValues( Box box){
-        return box.getMarkedPositions();
     }
 
     private void setMarkedValues( Box box){
@@ -179,21 +191,29 @@ public class BoxController
         return !box.isDownSide() ? 'D':'_';
     }
 
+    private void setAssignedBox( Box box, Player player ){
+        if ( box.getMarkedPositions() == 4 ){
+            box.setAssignee( player );
+        }
+    }
+
     /**
      * method used to mark left side of an element
      * and the right side if there is an element
      * on the left
      * @param box
      */
-    public void markLeftSide( Box box){
+    public void markLeftSide( Box box, Player player){
         box.setLeftSide( true );
         this.setMarkedValues( box );
+        this.setAssignedBox( box,player );
 
         if ( searchLeftBox( box.getRowPosition(),box.getColPosition() ) != -1){
             int leftBoxId = searchLeftBox( box.getRowPosition(),box.getColPosition() );
             Box leftBox = this.searchBoxById( leftBoxId );
             leftBox.setRightSide( true );
             this.setMarkedValues( leftBox );
+            this.setAssignedBox( leftBox,player );
         }
     }
     /**
@@ -202,39 +222,46 @@ public class BoxController
      * on the right
      * @param box
      */
-    public void markRightSide( Box box){
+    public void markRightSide( Box box, Player player){
         box.setRightSide( true );
         this.setMarkedValues( box );
+        this.setAssignedBox( box,player );
 
         if ( searchRightBox( box.getRowPosition(),box.getColPosition() ) != -1){
             int rightBoxId = searchRightBox( box.getRowPosition(),box.getColPosition() );
             Box rightBox = this.searchBoxById( rightBoxId );
             rightBox.setLeftSide( true );
             this.setMarkedValues( rightBox );
+            this.setAssignedBox( rightBox,player );
         }
     }
 
-    public void markUppertSide( Box box){
+    public void markUppertSide( Box box, Player player){
         box.setUpSide( true );
         this.setMarkedValues( box );
+        this.setAssignedBox( box,player );
 
         if ( searchUpBox( box.getRowPosition(),box.getColPosition() ) != -1){
             int upBoxId = searchUpBox( box.getRowPosition(),box.getColPosition() );
             Box upperBox = this.searchBoxById( upBoxId );
             upperBox.setDownSide( true );
             this.setMarkedValues( upperBox );
+            this.setAssignedBox( upperBox,player );
         }
     }
 
-    public void markDownSide( Box box){
+    public void markDownSide( Box box, Player player){
         box.setDownSide( true );
         this.setMarkedValues( box );
+        this.setAssignedBox( box,player );
 
         if ( searchDownBox( box.getRowPosition(),box.getColPosition() ) != -1){
             int downBoxId = searchDownBox( box.getRowPosition(),box.getColPosition() );
             Box downBox = this.searchBoxById( downBoxId );
             downBox.setUpSide( true );
             this.setMarkedValues( downBox );
+            this.setAssignedBox( downBox,player );
+
         }
     }
 }

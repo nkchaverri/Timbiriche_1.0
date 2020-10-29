@@ -1,5 +1,7 @@
 import com.timbiriche.controllers.BoxController;
 import com.timbiriche.controllers.GameMatrixController;
+import com.timbiriche.controllers.PlayerController;
+import com.timbiriche.models.Player;
 
 public class Main
 {
@@ -9,6 +11,8 @@ public class Main
         gameMatrixController.createGameMatrix( 2,2 );
 
         BoxController boxController = new BoxController( gameMatrixController.getGameMatrix().getMatrix() );
+        PlayerController playerController = new PlayerController();
+        Player currentPlayer =playerController.newPlayerCreated( 111111, "NC" );
         gameMatrixController.completeGameMatrix( boxController );
         gameMatrixController.printGameMatrix(boxController);
 
@@ -19,36 +23,20 @@ public class Main
         System.out.println( "Left Position 2: " + boxController.getLeftPosition( 0,1 ) );
 
 
-//        boxController.markLeftSide( boxController.searchBoxById( 2 ) );
-//        System.out.println( "--------------------------- Position 2 left side ----------------------" );
-//        gameMatrixController.printGameMatrix(boxController);
-//
-//        boxController.markLeftSide( boxController.searchBoxById( 1 ) );
-//        System.out.println( "--------------------------- Position 1 left side ----------------------" );
-//        gameMatrixController.printGameMatrix(boxController);
-//
-//        boxController.markRightSide( boxController.searchBoxById( 2 ) );
-//        System.out.println( "--------------------------- Position 2 right side ----------------------" );
-//        gameMatrixController.printGameMatrix(boxController);
-//
-//        boxController.markRightSide( boxController.searchBoxById( 3 ) );
-//        System.out.println( "--------------------------- Position 3 right side ----------------------" );
-//        gameMatrixController.printGameMatrix(boxController);
-//
-//        boxController.markRightSide( boxController.searchBoxById( 4 ) );
-//        System.out.println( "--------------------------- Position 4 right side ----------------------" );
-//        gameMatrixController.printGameMatrix(boxController);
-
-        boxController.markDownSide( boxController.searchBoxById( 2 ) );
-        System.out.println( "--------------------------- Position 2 Down side ----------------------" );
+        boxController.markDownSide( boxController.searchBoxById( 1 ),currentPlayer );
+        System.out.println( "--------------------------- Position 1 Down side ----------------------" );
         gameMatrixController.printGameMatrix(boxController);
 
-        boxController.markUppertSide( boxController.searchBoxById( 1 ) );
+        boxController.markUppertSide( boxController.searchBoxById( 1 ),currentPlayer );
         System.out.println( "--------------------------- Position 1 upper side ----------------------" );
         gameMatrixController.printGameMatrix(boxController);
 
-        boxController.markUppertSide( boxController.searchBoxById( 3 ) );
-        System.out.println( "--------------------------- Position 1 upper side ----------------------" );
+        boxController.markLeftSide( boxController.searchBoxById( 1 ),currentPlayer );
+        System.out.println( "--------------------------- Position 1 left side ----------------------" );
+        gameMatrixController.printGameMatrix(boxController);
+
+        boxController.markRightSide( boxController.searchBoxById( 1 ),currentPlayer );
+        System.out.println( "--------------------------- Position 1 right side ----------------------" );
         gameMatrixController.printGameMatrix(boxController);
 
     }

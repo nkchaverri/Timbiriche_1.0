@@ -39,33 +39,29 @@ public class GameMatrixController
             }
         }
     }
+
     public void printGameMatrix( BoxController boxController ){
         for ( int row = 0; row <this.gameMatrix.getMatrix().length ; row++ )
         {
             for ( int col = 0; col <this.gameMatrix.getMatrix()[row].length ; col++)
             {
-                System.out.print( "\n" );
-                if ( boxController.upSideAvailable( this.gameMatrix.getMatrix()[row][col] ) != ' '){
-                    System.out.println( "\t" +boxController.upSideAvailable( this.gameMatrix.getMatrix()[row][col] ) + "\t" );
+                String stringBox= "";
+                stringBox += System.lineSeparator();
+                stringBox += "\t" + boxController.upSideAvailable( this.gameMatrix.getMatrix()[row][col] ) +"\t";
+                stringBox += System.lineSeparator();
+                stringBox += boxController.lefSideAvailable( this.gameMatrix.getMatrix()[row][col] );
+                if ( this.gameMatrix.getMatrix()[row][col].getAssignee()!= null ){
+                    stringBox += "\t" + this.gameMatrix.getMatrix()[row][col].getAssignee().getPlayerInitials() + "\t ";
+                }else {
+                    stringBox += "\t" + this.gameMatrix.getMatrix()[row][col].getBoxId() + "\t ";
                 }
-                if ( boxController.lefSideAvailable( this.gameMatrix.getMatrix()[row][col] ) != ' '){
-                    System.out.print( boxController.lefSideAvailable( this.gameMatrix.getMatrix()[row][col] ));
-                }
-                System.out.print( "\t" + this.gameMatrix.getMatrix()[row][col].getBoxId() + "\t " );
-
-                if ( boxController.rightSideAvailable( this.gameMatrix.getMatrix()[row][col] ) != ' '){
-                    System.out.print( boxController.rightSideAvailable( this.gameMatrix.getMatrix()[row][col] ));
-                }
-
-                System.out.print( "\n" );
-
-                if ( boxController.downSideAvailable( this.gameMatrix.getMatrix()[row][col] ) != ' '){
-                    System.out.println( "\t" +boxController.downSideAvailable( this.gameMatrix.getMatrix()[row][col] ) + "\t" );
-                }
+                stringBox += boxController.rightSideAvailable( this.gameMatrix.getMatrix()[row][col] ) + System.lineSeparator();
+                stringBox += "\t" +boxController.downSideAvailable( this.gameMatrix.getMatrix()[row][col] ) + "\t";
+                stringBox += System.lineSeparator();
+                System.out.print( stringBox );
             }
-            System.out.print( "---------" );
         }
-
+        System.lineSeparator();
     }
 
 }
