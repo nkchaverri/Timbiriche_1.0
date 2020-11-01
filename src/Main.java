@@ -12,12 +12,19 @@ public class Main
 
         BoxController boxController = new BoxController( gameMatrixController.getGameMatrix().getMatrix() );
         PlayerController playerController = new PlayerController();
-        Player player1 = playerController.newPlayerCreated( 111111, "NC" );
+        //llamar primero a la lista de jugadores disponibles
+
+        Player player1 = playerController.createNewPlayer( 111111, "NC" );
         player1.setPoints( 3 );
-        Player player2 = playerController.newPlayerCreated( 222222, "MM" );
+        Player player2 = playerController.createNewPlayer( 222222, "MM" );
         player2.setPoints( 2 );
-        Player player3 = playerController.newPlayerCreated( 333333, "LM" );
+        Player player3 = playerController.createNewPlayer( 333333, "LM" );
         player3.setPoints( 3.5 );
+
+        playerController.getAvailablePlayers();
+
+        System.out.println( "EXISTE? :: " + playerController.playerExist( 111111 ) );
+        System.out.println( "EXISTE? :: " + playerController.playerExist( 1233445 ) );
 
         gameMatrixController.completeGameMatrix( boxController );
         gameMatrixController.printGameMatrix(boxController);
@@ -46,7 +53,7 @@ public class Main
         gameMatrixController.printGameMatrix(boxController);
 
         System.out.println( "--------------------------- PRINT PLAYERS ----------------------" );
-        System.out.println( playerController.getPlayers());
+        System.out.println( playerController.getAvailabePlayersList());
 
     }
 }

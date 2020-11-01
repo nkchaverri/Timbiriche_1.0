@@ -4,22 +4,35 @@ import com.timbiriche.models.Player;
 
 public class PlayerController
 {
-    private Player [] players;
+    private Player[] players;
+    private Player[] availablePlayers;
 
     public PlayerController( )
     {
         this.players  = new Player[100];
     }
 
-    public Player newPlayerCreated( int id, String playerInitials){
-        Player newPlayer;
+    public boolean playerExist( int id ){
+        for ( int i = 0; i <this.availablePlayers.length ; i++ )
+        {
+            if ( this.availablePlayers[i].getPlayerID() == id ){
+                return true;
+            }
+        }
+        return false;
+    }
 
+    public boolean isValidId( int id ){
         int intLength = String.valueOf(id).length();
 
         if ( intLength < 4 || intLength > 8 ){
-            return null;
+            return false;
         }
+        return true;
+    }
 
+    public Player createNewPlayer( int id, String playerInitials){
+        Player newPlayer;
         newPlayer = new Player( id,playerInitials );
         this.addPlayerToList( newPlayer );
         return newPlayer;
@@ -60,17 +73,22 @@ public class PlayerController
         return arrayPlayers;
     }
 
-    public String getPlayers(){
+    public Player[] getAvailablePlayers(){
 
-        Player [] availablePlayers = new Player[this.playersCreated()];
+        this.availablePlayers = new Player[this.playersCreated()];
         for ( int i = 0; i <this.players.length ; i++ )
         {
             if ( this.players[i] != null )
             {
-                availablePlayers[i] = this.players[i];
+                this.availablePlayers[i] = this.players[i];
             }
         }
-        return this.getPlayerList( this.orderDescendenly( availablePlayers )) ;
+        return this.availablePlayers ;
+    }
+
+    public String getAvailabePlayersList(){
+
+        return this.getPlayerList( this.orderDescendenly( this.availablePlayers )) ;
     }
 
     private String getPlayerList( Player[] playersToPrint){
