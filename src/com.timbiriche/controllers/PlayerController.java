@@ -20,13 +20,6 @@ public class PlayerController
     }
 
     private void createPlayerFile(){
-        Player player1 = this.createNewPlayer( 111111, "NC" );
-        player1.setPoints( 3 );
-        Player player2 = this.createNewPlayer( 222222, "MM" );
-        player2.setPoints( 2 );
-        Player player3 = this.createNewPlayer( 333333, "LM" );
-        player3.setPoints( 3.5 );
-
         fileUtils.createFile( this.availablePlayers );
     }
 

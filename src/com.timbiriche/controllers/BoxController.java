@@ -17,6 +17,11 @@ public class BoxController
         this.boxMatrix = boxMatrix;
     }
 
+    public Box[][] getBoxMatrix()
+    {
+        return boxMatrix;
+    }
+
     public Box createBoxModel( int id, int colPos, int rowPos){
 
         if ( id <= 0 ){
@@ -123,9 +128,7 @@ public class BoxController
                     return this.boxMatrix[row][col];
                 }
             }
-            System.out.print( "\n" );
         }
-
         return null;
     }
 

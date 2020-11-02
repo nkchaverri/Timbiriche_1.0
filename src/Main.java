@@ -9,8 +9,7 @@ public class Main
 {
     public static void main( String[] args )
     {
-        GameMatrixController gameMatrixController = new GameMatrixController();
-        gameMatrixController.createGameMatrix( 2,2 );
+        GameMatrixController gameMatrixController = new GameMatrixController(2,2);
 
         BoxController boxController = new BoxController( gameMatrixController.getGameMatrix().getMatrix() );
         PlayerController playerController = new PlayerController();
@@ -20,7 +19,7 @@ public class Main
         System.out.println( "EXISTE? :: " + playerController.playerExist( 1233445 ) );
 
         gameMatrixController.completeGameMatrix( boxController );
-        gameMatrixController.printGameMatrix(boxController);
+        gameMatrixController.printMatrix(boxController.getBoxMatrix());
 
         System.out.println( "----------------------------------------------------------------------------" );
         System.out.println( "Below position 2: " + boxController.getBelowPosition( 0,1 ) );
@@ -31,19 +30,19 @@ public class Main
 
         boxController.markDownSide( boxController.searchBoxById( 1 ),playerController.getAvailablePlayers()[0] );
         System.out.println( "--------------------------- Position 1 Down side ----------------------" );
-        gameMatrixController.printGameMatrix(boxController);
+        gameMatrixController.printMatrix(boxController.getBoxMatrix());
 
         boxController.markUppertSide( boxController.searchBoxById( 1 ),playerController.getAvailablePlayers()[0]  );
         System.out.println( "--------------------------- Position 1 upper side ----------------------" );
-        gameMatrixController.printGameMatrix(boxController);
+        gameMatrixController.printMatrix(boxController.getBoxMatrix());
 
         boxController.markLeftSide( boxController.searchBoxById( 1 ),playerController.getAvailablePlayers()[0]  );
         System.out.println( "--------------------------- Position 1 left side ----------------------" );
-        gameMatrixController.printGameMatrix(boxController);
+        gameMatrixController.printMatrix(boxController.getBoxMatrix());
 
         boxController.markRightSide( boxController.searchBoxById( 1 ),playerController.getAvailablePlayers()[0]  );
         System.out.println( "--------------------------- Position 1 right side ----------------------" );
-        gameMatrixController.printGameMatrix(boxController);
+        gameMatrixController.printMatrix(boxController.getBoxMatrix());
 
         System.out.println( "--------------------------- PRINT PLAYERS ----------------------" );
         System.out.println( playerController.getAvailabePlayersList());
