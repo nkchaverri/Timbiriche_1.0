@@ -1,6 +1,7 @@
 package com.timbiriche.models;
+import java.io.Serializable;
 
-public class Player
+public class Player implements Serializable
 {
     private int playerID;
     private String playerInitials;
@@ -43,5 +44,11 @@ public class Player
     public void setPoints( double points )
     {
         this.points = points;
+    }
+
+    @Override
+    public String toString() {
+        return "Id:" + this.playerID + ", Initials: " + this.playerInitials + ", Points: " + this.points
+                + ", Games: " + this.wonGames;
     }
 }

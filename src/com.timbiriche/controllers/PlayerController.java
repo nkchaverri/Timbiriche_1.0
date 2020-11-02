@@ -1,15 +1,38 @@
 package com.timbiriche.controllers;
 
+import com.timbiriche.Utils.FileUtils;
 import com.timbiriche.models.Player;
 
 public class PlayerController
 {
     private Player[] players;
     private Player[] availablePlayers;
+    private FileUtils fileUtils;
 
-    public PlayerController( )
+    public PlayerController()
     {
         this.players  = new Player[100];
+        this.fileUtils = new FileUtils();
+
+        //this.createPlayerFile();
+        initializePlayers();
+
+    }
+
+    private void createPlayerFile(){
+        Player player1 = this.createNewPlayer( 111111, "NC" );
+        player1.setPoints( 3 );
+        Player player2 = this.createNewPlayer( 222222, "MM" );
+        player2.setPoints( 2 );
+        Player player3 = this.createNewPlayer( 333333, "LM" );
+        player3.setPoints( 3.5 );
+
+        fileUtils.createFile( this.availablePlayers );
+    }
+
+    private void initializePlayers(){
+      this.fileUtils.importPlayers( this.players );
+      this.getAvailablePlayers();
     }
 
     public boolean playerExist( int id ){
@@ -35,6 +58,7 @@ public class PlayerController
         Player newPlayer;
         newPlayer = new Player( id,playerInitials );
         this.addPlayerToList( newPlayer );
+        this.getAvailablePlayers();
         return newPlayer;
     }
 
@@ -91,7 +115,7 @@ public class PlayerController
         return this.getPlayerList( this.orderDescendenly( this.availablePlayers )) ;
     }
 
-    private String getPlayerList( Player[] playersToPrint){
+    public String getPlayerList( Player[] playersToPrint){
         String result="";
         for ( int i = 0; i <playersToPrint.length ; i++ )
         {

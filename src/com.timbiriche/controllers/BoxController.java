@@ -10,6 +10,8 @@ import com.timbiriche.models.Player;
 public class BoxController
 {
     private Box [][] boxMatrix;
+    private Box[] availableBoxes;
+    private char[] availablePositions;
 
     public BoxController ( Box [][] boxMatrix){
         this.boxMatrix = boxMatrix;
@@ -179,16 +181,16 @@ public class BoxController
      * @return char with the value of the available side
      */
     protected char lefSideAvailable(Box box){
-        return !box.isLeftSide() ? 'L':'|';
+        return !box.isLeftSide() ? 'L':' ';
     }
     protected char rightSideAvailable(Box box){
-        return !box.isRightSide() ? 'R':'|';
+        return !box.isRightSide() ? 'R':' ';
     }
     protected char upSideAvailable(Box box){
-        return !box.isUpSide() ? 'U':'_';
+        return !box.isUpSide() ? 'U':' ';
     }
     protected char downSideAvailable(Box box){
-        return !box.isDownSide() ? 'D':'_';
+        return !box.isDownSide() ? 'D':' ';
     }
 
     private void setAssignedBox( Box box, Player player ){
@@ -263,5 +265,47 @@ public class BoxController
             this.setAssignedBox( downBox,player );
 
         }
+    }
+
+    private int notAssignedBoxes()
+    {
+        int notAssignedBoxes = 0;
+        for ( int row = 0; row < this.boxMatrix.length; row++ )
+        {
+            for ( int col = 0; col < boxMatrix[ row ].length; col++ )
+            {
+                if ( boxMatrix[ row ][ col ].getAssignee() == null )
+                {
+                    notAssignedBoxes++;
+                }
+            }
+        }
+        return notAssignedBoxes;
+    }
+
+
+    public Box[] getAvailableBoxes(){
+
+        this.availableBoxes = new Box[this.notAssignedBoxes()];
+        int arrayPositions = 0;
+        for ( int row = 0; row <this.boxMatrix.length ; row++ )
+        {
+            for ( int col = 0; col <boxMatrix[row].length ; col++)
+            {
+                if ( boxMatrix[row][col].getAssignee() !=  null ){
+                    continue;
+                }else{
+                    this.availableBoxes[arrayPositions] = boxMatrix[row][col];
+                    arrayPositions++;
+                }
+            }
+        }
+        return this.availableBoxes;
+    }
+
+    public char[] getAvailablePositions(Box box){
+       return this.availablePositions = new char[]{this.lefSideAvailable( box ), this.rightSideAvailable( box ),
+                                                    this.upSideAvailable( box ),this.downSideAvailable( box )};
+
     }
 }

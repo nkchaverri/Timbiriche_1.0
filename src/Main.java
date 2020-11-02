@@ -3,6 +3,8 @@ import com.timbiriche.controllers.GameMatrixController;
 import com.timbiriche.controllers.PlayerController;
 import com.timbiriche.models.Player;
 
+import com.timbiriche.Utils.FileUtils;
+
 public class Main
 {
     public static void main( String[] args )
@@ -12,16 +14,7 @@ public class Main
 
         BoxController boxController = new BoxController( gameMatrixController.getGameMatrix().getMatrix() );
         PlayerController playerController = new PlayerController();
-        //llamar primero a la lista de jugadores disponibles
 
-        Player player1 = playerController.createNewPlayer( 111111, "NC" );
-        player1.setPoints( 3 );
-        Player player2 = playerController.createNewPlayer( 222222, "MM" );
-        player2.setPoints( 2 );
-        Player player3 = playerController.createNewPlayer( 333333, "LM" );
-        player3.setPoints( 3.5 );
-
-        playerController.getAvailablePlayers();
 
         System.out.println( "EXISTE? :: " + playerController.playerExist( 111111 ) );
         System.out.println( "EXISTE? :: " + playerController.playerExist( 1233445 ) );
@@ -36,24 +29,40 @@ public class Main
         System.out.println( "Left Position 2: " + boxController.getLeftPosition( 0,1 ) );
 
 
-        boxController.markDownSide( boxController.searchBoxById( 1 ),player1 );
+        boxController.markDownSide( boxController.searchBoxById( 1 ),playerController.getAvailablePlayers()[0] );
         System.out.println( "--------------------------- Position 1 Down side ----------------------" );
         gameMatrixController.printGameMatrix(boxController);
 
-        boxController.markUppertSide( boxController.searchBoxById( 1 ),player1 );
+        boxController.markUppertSide( boxController.searchBoxById( 1 ),playerController.getAvailablePlayers()[0]  );
         System.out.println( "--------------------------- Position 1 upper side ----------------------" );
         gameMatrixController.printGameMatrix(boxController);
 
-        boxController.markLeftSide( boxController.searchBoxById( 1 ),player2 );
+        boxController.markLeftSide( boxController.searchBoxById( 1 ),playerController.getAvailablePlayers()[0]  );
         System.out.println( "--------------------------- Position 1 left side ----------------------" );
         gameMatrixController.printGameMatrix(boxController);
 
-        boxController.markRightSide( boxController.searchBoxById( 1 ),player3 );
+        boxController.markRightSide( boxController.searchBoxById( 1 ),playerController.getAvailablePlayers()[0]  );
         System.out.println( "--------------------------- Position 1 right side ----------------------" );
         gameMatrixController.printGameMatrix(boxController);
 
         System.out.println( "--------------------------- PRINT PLAYERS ----------------------" );
         System.out.println( playerController.getAvailabePlayersList());
+
+
+        System.out.println( "--------------------------- PRINT AVAILABLE POSITIONS ----------------------" );
+        for ( int i = 0; i <boxController.getAvailableBoxes().length ; i++ )
+        {
+            System.out.println( " Box ID " + boxController.getAvailableBoxes()[i].getBoxId() );
+
+            char[] positions = boxController.getAvailablePositions(boxController.getAvailableBoxes()[i]);
+
+            for ( int j = 0; j <positions.length; j++ )
+            {
+                if ( positions[j]!= ' ' )
+                System.out.println( "Position " + positions[j]  );
+            }
+        }
+
 
     }
 }
