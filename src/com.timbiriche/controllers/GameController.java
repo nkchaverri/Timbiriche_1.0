@@ -2,6 +2,8 @@ package com.timbiriche.controllers;
 
 import com.timbiriche.models.Player;
 
+import java.io.IOException;
+
 public class GameController
 {
     private GameMatrixController gameMatrixController;
@@ -19,11 +21,26 @@ public class GameController
     }
 
     public void intilizePlayers(){
-        playerController = new PlayerController();
+        this.playerController = new PlayerController();
     }
-    public void intilizeMatrix(int rows, int cols){
+
+    public String showAvailablePlayers(){
+       return this.playerController.getAvailabePlayersList();
+    }
+
+
+
+    public void initAndFillGameBoard(int rows, int cols){
 
         this.gameMatrixController = new GameMatrixController( rows, cols );
         this.boxController = new BoxController( gameMatrixController.getGameMatrix().getMatrix() );
+
+
+        this.gameMatrixController.completeGameMatrix( this.boxController );
     }
+
+    public void printMatrix(){
+        this.gameMatrixController.printMatrix( this.boxController.getBoxMatrix() );
+    }
+
 }

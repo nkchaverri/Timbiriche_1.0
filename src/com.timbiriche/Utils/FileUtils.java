@@ -29,35 +29,31 @@ public class FileUtils
         }
     }
 
-    public void importPlayers( Player[] players){
+    public void importPlayers( Player[] players)
+    {
         try {
-            FileInputStream fis = new FileInputStream("Players.txt");
+            FileInputStream fis= new FileInputStream("Players.txt");
             ObjectInputStream input = new ObjectInputStream(fis);
             boolean cont = true;
             int position = 0;
             while (cont) {
-               try
-               {
                    Player obj = (Player) input.readObject();
-
-                   System.out.println( obj );
 
                    if (obj.getPlayerInitials() != null) {
                        players[position]= obj;
                        position ++;
                    }else {
                        cont= false;
-                       input.close();
-                       fis.close();
                    }
-               } catch ( ClassNotFoundException e ){
-                   e.printStackTrace();
-               }
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found");
+        }
+            input.close();
+            fis.close();
+        } catch ( ClassNotFoundException e ){
+            //e.printStackTrace();
+        }catch (FileNotFoundException e) {
+            //e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("Error initializing stream");
+            //e.printStackTrace();
         }
     }
 }

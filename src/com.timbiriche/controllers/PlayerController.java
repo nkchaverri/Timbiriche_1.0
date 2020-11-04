@@ -3,6 +3,8 @@ package com.timbiriche.controllers;
 import com.timbiriche.Utils.FileUtils;
 import com.timbiriche.models.Player;
 
+import java.util.Random;
+
 public class PlayerController
 {
     private Player[] players;
@@ -14,13 +16,28 @@ public class PlayerController
         this.players  = new Player[100];
         this.fileUtils = new FileUtils();
 
-        //this.createPlayerFile();
         initializePlayers();
 
     }
 
     private void createPlayerFile(){
         fileUtils.createFile( this.availablePlayers );
+    }
+
+    public int getRandomPlayerId( int id1, int id2){
+
+        int randomOfTwoInts = new Random().nextBoolean() ? id1 : id2;
+        return randomOfTwoInts;
+    }
+
+    public Player getPlayerById(int id){
+        for ( int i = 0; i <this.availablePlayers.length ; i++ )
+        {
+            if ( this.availablePlayers[i].getPlayerID() == id ){
+                return this.availablePlayers[i];
+            }
+        }
+        return null;
     }
 
     private void initializePlayers(){
@@ -108,7 +125,7 @@ public class PlayerController
         return this.getPlayerList( this.orderDescendenly( this.availablePlayers )) ;
     }
 
-    public String getPlayerList( Player[] playersToPrint){
+    private String getPlayerList( Player[] playersToPrint){
         String result="";
         for ( int i = 0; i <playersToPrint.length ; i++ )
         {
