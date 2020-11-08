@@ -1,5 +1,6 @@
 package com.timbiriche.views;
 import com.timbiriche.controllers.GameController;
+import com.timbiriche.models.Box;
 import com.timbiriche.models.Player;
 import java.util.Scanner;
 
@@ -80,6 +81,9 @@ public class GameView
         this.showMessage( "Filas: " + this.rows + " Columnas: " + this.cols );
         this.gameController.getPlayerController().getAvailabePlayersList();
 
+        this.gameController.initAndFillGameBoard( this.rows, this.cols );
+        this.gameController.printMatrix();
+
         //request option for players
         char[] gameValidValues = {'1','2','3','4','5'};
         char gameOption= this.requestChar( GAME_OPTION , gameValidValues );
@@ -91,7 +95,7 @@ public class GameView
                 this.player2 = this.gameController.getPlayerController().getPlayerById( playerId);
             }while ( this.player2 == null );
 
-            this.gameController.twoPlayersGame( this.player1,this.player2 );
+            this.twoPlayersGame( this.player1,this.player2 );
         }
 
 
@@ -213,5 +217,42 @@ public class GameView
             return false;
         }
     }
+
+    public void twoPlayersGame(Player player1, Player player2){
+
+        Player firstPlayer;
+        Player secondPlayer;
+
+        int id1 =player1.getPlayerID();
+        int id2 =player2.getPlayerID();
+
+        int randomPlayerId = this.gameController.getPlayerController().getRandomPlayerId( id1,id2 );
+        System.out.println("Random ID: "+ randomPlayerId );
+
+        firstPlayer = player1.getPlayerID() == randomPlayerId ? player1:player2;
+        secondPlayer = player1.getPlayerID() != randomPlayerId ? player1:player2;
+
+        System.out.println("First player: "+ firstPlayer.toString() );
+        System.out.println("Second player: "+ secondPlayer.toString() );
+
+        do{
+            this.showMessage( this.gameController.availablePositionsList() );
+            int[] boxPositions = this.gameController.getBoxesPositions();
+            int position =  Integer.parseInt( this.requestNumberInRange( "Ingrese el numero de la posicion que desea marcar: ", boxPositions ) );
+            Box requestedBox = this.gameController.getBoxController().searchBoxById( position );
+
+            this.showMessage( "Box requested: "+ requestedBox.toString() );
+            this.showMessage( this.gameController.showAvailableSides( requestedBox ) );
+
+            char[] sides = this.gameController.getPosiblePositions();
+            char side = Character.toUpperCase( this.requestChar( "Escoja el lado que desea marcar: ", sides ) );
+
+            this.showMessage( "Side selected : " + side );
+
+
+
+        }while (this.gameController.areAvailablePositions());
+    }
+
 
 }

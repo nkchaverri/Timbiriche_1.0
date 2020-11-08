@@ -1,8 +1,7 @@
 package com.timbiriche.controllers;
 
+import com.timbiriche.models.Box;
 import com.timbiriche.models.Player;
-
-import java.io.IOException;
 
 public class GameController
 {
@@ -39,22 +38,99 @@ public class GameController
         this.gameMatrixController.printMatrix( this.boxController.getBoxMatrix() );
     }
 
-    public void twoPlayersGame(Player player1, Player player2){
+    public String showAvailableSides( Box box ){
+        char[] positions= this.boxController.getAvailablePositions( box );
+        String result = "";
 
-        Player firstPlayer;
-        Player secondPlayer;
-
-        int id1 =player1.getPlayerID();
-        int id2 =player2.getPlayerID();
-
-        int randomPlayerId = this.playerController.getRandomPlayerId( id1,id2 );
-        System.out.println("Random ID: "+ randomPlayerId );
-
-        firstPlayer = player1.getPlayerID() == randomPlayerId ? player1:player2;
-        secondPlayer = player1.getPlayerID() != randomPlayerId ? player1:player2;
-
-        System.out.println("First player: "+ firstPlayer.toString() );
-        System.out.println("Second player: "+ secondPlayer.toString() );
+        for ( int i = 0; i <positions.length ; i++ )
+        {
+            if ( positions[i]!= ' ' ){
+                result+= positions[i]=='L'?"I :Izquierda.\n":"";
+                result+= positions[i]=='R'?"D :Derecha.\n":"";
+                result+= positions[i]=='U'?"S :Superior.\n":"";
+                result+= positions[i]=='D'?"A :Abajo.\n":"";
+            }
+        }
+        return result;
     }
+
+    public String availablePositionsList(){
+        Box[] boxesAvailable = this.boxController.getAvailableBoxes();
+        String result = "";
+        for ( int i = 0; i <boxesAvailable.length ; i++ )
+        {
+            result+= boxesAvailable[i] + "\n";
+        }
+        return result;
+    }
+
+    public int[] getBoxesPositions(){
+
+        Box[] boxArray = this.boxController.getAvailableBoxes();
+        int[] positions = new int[boxArray.length];
+
+        for ( int i = 0; i <positions.length ; i++ )
+        {
+            positions[i]= boxArray[i].getBoxId();
+        }
+
+        return positions;
+    }
+
+    public char[] getPosiblePositions(){
+        char[] postions= {'I','D','S','A'};
+        return postions;
+    }
+
+    public boolean areAvailablePositions(){
+        return this.boxController.getAvailableBoxes().length>0;
+    }
+
+    public boolean createMove( Player currentPlayer,Box box, int position, char side){
+        boolean madeMove = false;
+        if ( !validSide( side,box )|| !validPosition( position ) ){
+            return madeMove;
+        }
+        return true;
+    }
+
+    private char convertChar( char side){
+        switch ( side ){
+            case 'I': side = 'L';
+                break;
+            case 'D': side = 'R';
+                break;
+            case 'S' : side = 'U';
+                break;
+            case 'A' : side = 'D';
+                break;
+        }
+        return side;
+    }
+
+    private boolean validSide(char side, Box box){
+        side = this.convertChar( side );
+        char [] sidesPerBox = this.getBoxController().getAvailablePositions( box );
+        for ( int i = 0; i <sidesPerBox.length ; i++ )
+        {
+            if ( sidesPerBox[i] == side ){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean validPosition( int position){
+
+        int [] boxPositions = this.getBoxesPositions();
+        for ( int i = 0; i <boxPositions.length ; i++ )
+        {
+            if ( boxPositions[i] == position ){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }
