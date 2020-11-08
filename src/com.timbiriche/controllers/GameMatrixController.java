@@ -2,7 +2,6 @@ package com.timbiriche.controllers;
 
 import com.timbiriche.models.Box;
 import com.timbiriche.models.GameMatrix;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
 /**
  * @author nchaveri

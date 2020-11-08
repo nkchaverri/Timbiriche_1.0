@@ -1,7 +1,5 @@
 package com.timbiriche.Utils;
-
 import com.timbiriche.models.Player;
-
 import java.io.*;
 
 public class FileUtils

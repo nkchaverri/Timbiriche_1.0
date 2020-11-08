@@ -1,8 +1,6 @@
 package com.timbiriche.controllers;
-
 import com.timbiriche.Utils.FileUtils;
 import com.timbiriche.models.Player;
-
 import java.util.Random;
 
 public class PlayerController
@@ -49,6 +47,16 @@ public class PlayerController
         for ( int i = 0; i <this.availablePlayers.length ; i++ )
         {
             if ( this.availablePlayers[i].getPlayerID() == id ){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean playerInitialsExist( String initials ){
+        for ( int i = 0; i <this.availablePlayers.length ; i++ )
+        {
+            if ( this.availablePlayers[i].getPlayerInitials().equals( initials ) ){
                 return true;
             }
         }
@@ -136,5 +144,15 @@ public class PlayerController
         return result;
     }
 
-
+    public String getAvailableSecondPlayers(Player player){
+        String result="";
+        Player [] secondPlayer = new Player[this.playersCreated()-1];
+        for ( int i = 0; i <this.availablePlayers.length ; i++ )
+        {
+            if ( this.availablePlayers[i] != player ){
+                secondPlayer = this.availablePlayers;
+            }
+        }
+        return this.getPlayerList( this.orderDescendenly( secondPlayer )) ;
+    }
 }
