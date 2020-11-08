@@ -21,8 +21,8 @@ public class GameView
                                             " A continuacion se le presentara un tablero conformado por puntos\n" +
                                             " El objetivo es marcar lineas en turnos alternados por jugadores hasta completar todos los lados de una caja\n" +
                                             " Gana el jugador que logre completar la mayor cantidad de cajas con sus iniciales";
-    private final String GAME_OPTION="Escoja alguna de las siguientes opciones::\n  1-2 jugadores.\n    2- Fácil.Contra la computadora.\n" +
-                                        "   3-Medio.Contra la computadora.\n    4-Dificil.Contra la computadora.\n  5-Finalizar Juego.";
+    private final String GAME_OPTION="Escoja alguna de las siguientes opciones::\n 1- Dos jugadores.\n 2- Fácil.Contra la computadora.\n" +
+                                        " 3- Medio.Contra la computadora.\n 4- Dificil.Contra la computadora.\n 5- Finalizar Juego.";
 
     public GameView()
     {
@@ -55,7 +55,7 @@ public class GameView
                 }else{
                     int[] length = {1,2};
                     String playerInitials = this.requestString( "Ingrese las iniciales del jugador: \n 1 o 2 Letras máximo " +
-                                                                                "\nDiferentes a los existentes"  , length );
+                                                                                "\nDiferentes a los existentes"  , length ).toUpperCase();
 
                     Player playerCreated = this.gameController.getPlayerController().createNewPlayer( idPlayer, playerInitials );
                     this.player1 = playerCreated;
@@ -79,6 +79,20 @@ public class GameView
 
         this.showMessage( "Filas: " + this.rows + " Columnas: " + this.cols );
         this.gameController.getPlayerController().getAvailabePlayersList();
+
+        //request option for players
+        char[] gameValidValues = {'1','2','3','4','5'};
+        char gameOption= this.requestChar( GAME_OPTION , gameValidValues );
+
+        if ( gameOption =='1' ){
+            this.showMessage( this.gameController.getPlayerController().getAvailableSecondPlayers( this.player1 ) );
+            do{
+                int playerId = Integer.parseInt( this.requestNumber( "Ingrese el ID del jugador que desea utilizar") );
+                this.player2 = this.gameController.getPlayerController().getPlayerById( playerId);
+            }while ( this.player2 == null );
+
+            this.gameController.twoPlayersGame( this.player1,this.player2 );
+        }
 
 
     }

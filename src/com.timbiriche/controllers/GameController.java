@@ -39,4 +39,22 @@ public class GameController
         this.gameMatrixController.printMatrix( this.boxController.getBoxMatrix() );
     }
 
+    public void twoPlayersGame(Player player1, Player player2){
+
+        Player firstPlayer;
+        Player secondPlayer;
+
+        int id1 =player1.getPlayerID();
+        int id2 =player2.getPlayerID();
+
+        int randomPlayerId = this.playerController.getRandomPlayerId( id1,id2 );
+        System.out.println("Random ID: "+ randomPlayerId );
+
+        firstPlayer = player1.getPlayerID() == randomPlayerId ? player1:player2;
+        secondPlayer = player1.getPlayerID() != randomPlayerId ? player1:player2;
+
+        System.out.println("First player: "+ firstPlayer.toString() );
+        System.out.println("Second player: "+ secondPlayer.toString() );
+    }
+
 }

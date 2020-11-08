@@ -145,12 +145,13 @@ public class PlayerController
     }
 
     public String getAvailableSecondPlayers(Player player){
-        String result="";
+        int position = 0;
         Player [] secondPlayer = new Player[this.playersCreated()-1];
         for ( int i = 0; i <this.availablePlayers.length ; i++ )
         {
             if ( this.availablePlayers[i] != player ){
-                secondPlayer = this.availablePlayers;
+                secondPlayer[position] = this.availablePlayers[i];
+                position ++;
             }
         }
         return this.getPlayerList( this.orderDescendenly( secondPlayer )) ;
