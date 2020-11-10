@@ -108,7 +108,7 @@ public class GameView
     private final String TRY_AGAIN_ERROR = "Opción inválida!\n";
 
     public void showMessage(String message){
-        System.out.println( message + "\n");
+        System.out.println( message );
     }
 
     public void showErrorMessage(String message){
@@ -165,7 +165,7 @@ public class GameView
             tryAgainError = TRY_AGAIN_ERROR;
             String textInput = this.input.nextLine();
             if (!textInput.isEmpty()) {
-                character = textInput.charAt( 0 );
+                character = Character.toUpperCase(textInput.charAt( 0 ));
             }
         } while (!arrayContainsValue(validValues, character));
         return character;
@@ -184,6 +184,7 @@ public class GameView
 
     private boolean numberIsInRange(int[] validValues, String value) {
         boolean isOnArray = false;
+        //TODO: validate if number
         int intValue = Integer.parseInt( value );
         for (int i = 0; i < validValues.length; i++) {
             if (validValues[i] == intValue) {
@@ -213,7 +214,7 @@ public class GameView
             return true;
         } catch (NumberFormatException ex)
         {
-            ex.printStackTrace();
+            //ex.printStackTrace();
             return false;
         }
     }
@@ -222,37 +223,65 @@ public class GameView
 
         Player firstPlayer;
         Player secondPlayer;
+        Player awaitPlayer;
 
         int id1 =player1.getPlayerID();
         int id2 =player2.getPlayerID();
 
         int randomPlayerId = this.gameController.getPlayerController().getRandomPlayerId( id1,id2 );
-        System.out.println("Random ID: "+ randomPlayerId );
+//        System.out.println("Random ID: "+ randomPlayerId );
 
         firstPlayer = player1.getPlayerID() == randomPlayerId ? player1:player2;
         secondPlayer = player1.getPlayerID() != randomPlayerId ? player1:player2;
 
-        System.out.println("First player: "+ firstPlayer.toString() );
-        System.out.println("Second player: "+ secondPlayer.toString() );
-
         do{
+//            System.out.println("First player: "+ firstPlayer.toString() );
+//            System.out.println("Second player: "+ secondPlayer.toString() );
+            this.showMessage( "****************************************************************************************" );
+            this.showMessage( "\t\t Jugador en turno: " + firstPlayer.getPlayerInitials() +"\t\t" +
+                                "Marcador para: " +firstPlayer.getPlayerInitials() + "\t"+this.gameController.getBoxController().boxesByPlayer( firstPlayer )  +"\t\t" +
+                                    "Marcador para: " +secondPlayer.getPlayerInitials() + "\t"+this.gameController.getBoxController().boxesByPlayer( secondPlayer ) );
+            this.showMessage( "****************************************************************************************" );
+
+            this.gameController.printMatrix();
+
             this.showMessage( this.gameController.availablePositionsList() );
             int[] boxPositions = this.gameController.getBoxesPositions();
             int position =  Integer.parseInt( this.requestNumberInRange( "Ingrese el numero de la posicion que desea marcar: ", boxPositions ) );
             Box requestedBox = this.gameController.getBoxController().searchBoxById( position );
 
-            this.showMessage( "Box requested: "+ requestedBox.toString() );
+//            this.showMessage( "Box requested: "+ requestedBox.toString() );
             this.showMessage( this.gameController.showAvailableSides( requestedBox ) );
 
             char[] sides = this.gameController.getPosiblePositions();
-            char side = Character.toUpperCase( this.requestChar( "Escoja el lado que desea marcar: ", sides ) );
+            char side =  this.requestChar( "Escoja el lado que desea marcar: ", sides ) ;
 
-            this.showMessage( "Side selected : " + side );
+//            this.showMessage( "Side selected : " + side );
 
-
-
+            if ( this.gameController.createMove( firstPlayer,requestedBox, position, side ) ){
+//                System.out.println( "MAKE A MOVE" );
+                awaitPlayer = firstPlayer;
+                firstPlayer = secondPlayer;
+                secondPlayer = awaitPlayer;
+            }
         }while (this.gameController.areAvailablePositions());
+        this.showMessage( "-------------------------------------------------------------------------------------------------------------------------------" );
+        this.gameController.printMatrix();
+        this.showMessage( "MARCADOR FINAL: \n"  );
+        this.showMessage( "Marcador para: " +firstPlayer.getPlayerInitials() + "\t"+this.gameController.getBoxController().boxesByPlayer( firstPlayer ) );
+        this.showMessage( "Marcador para: " +secondPlayer.getPlayerInitials() + "\t"+this.gameController.getBoxController().boxesByPlayer( secondPlayer ) );
+        if (this.gameController.getBoxController().boxesByPlayer( firstPlayer ) >  this.gameController.getBoxController().boxesByPlayer( secondPlayer )  ){
+            firstPlayer.setPoints( firstPlayer.getPoints()+1 );
+            firstPlayer.setWonGames( firstPlayer.getWonGames() + 1 );
+            this.showMessage( "GANDOR: " + firstPlayer.getPlayerInitials());
+        }else if (  this.gameController.getBoxController().boxesByPlayer( secondPlayer ) >  this.gameController.getBoxController().boxesByPlayer( firstPlayer ) ){
+            secondPlayer.setPoints( secondPlayer.getPoints() +1 );
+            secondPlayer.setWonGames( firstPlayer.getWonGames() + 1 );
+            this.showMessage( "GANDOR: " + secondPlayer.getPlayerInitials());
+        }else {
+            firstPlayer.setPoints( firstPlayer.getPoints()+0.5 );
+            secondPlayer.setPoints( secondPlayer.getPoints() +0.5 );
+            this.showMessage( "EMPATE" );
+        }
     }
-
-
 }

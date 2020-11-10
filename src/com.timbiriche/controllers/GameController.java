@@ -45,10 +45,10 @@ public class GameController
         for ( int i = 0; i <positions.length ; i++ )
         {
             if ( positions[i]!= ' ' ){
-                result+= positions[i]=='L'?"I :Izquierda.\n":"";
-                result+= positions[i]=='R'?"D :Derecha.\n":"";
-                result+= positions[i]=='U'?"S :Superior.\n":"";
-                result+= positions[i]=='D'?"A :Abajo.\n":"";
+                result+= positions[i]=='L'?"I :Izquierda.\t":"";
+                result+= positions[i]=='R'?"D :Derecha.\t":"";
+                result+= positions[i]=='U'?"S :Superior.\t":"";
+                result+= positions[i]=='D'?"A :Abajo.":"";
             }
         }
         return result;
@@ -56,10 +56,10 @@ public class GameController
 
     public String availablePositionsList(){
         Box[] boxesAvailable = this.boxController.getAvailableBoxes();
-        String result = "";
+        String result = "Posiciones Disponibles: \n" ;
         for ( int i = 0; i <boxesAvailable.length ; i++ )
         {
-            result+= boxesAvailable[i] + "\n";
+            result+= boxesAvailable[i].getBoxId() + "\t";
         }
         return result;
     }
@@ -91,7 +91,23 @@ public class GameController
         if ( !validSide( side,box )|| !validPosition( position ) ){
             return madeMove;
         }
+
+        markMove( side, box,currentPlayer );
         return true;
+    }
+
+    private void markMove(char side, Box box, Player player){
+        side = convertChar( side );
+        switch ( side ){
+            case 'L': this.getBoxController().markLeftSide( box,player );
+            break;
+            case 'R': this.getBoxController().markRightSide( box,player );
+                break;
+            case 'U': this.getBoxController().markUppertSide( box,player );
+                break;
+            case 'D': this.getBoxController().markDownSide( box,player );
+                break;
+        }
     }
 
     private char convertChar( char side){

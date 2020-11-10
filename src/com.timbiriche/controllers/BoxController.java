@@ -139,7 +139,7 @@ public class BoxController
         {
             for ( int col = 0; col <boxMatrix[row].length ; col++)
             {
-                if ( this.boxMatrix[row][col].getAssignee().getPlayerInitials().equals( player.getPlayerInitials() ) ){
+                if ( this.boxMatrix[row][col].getAssignee()!= null && this.boxMatrix[row][col].getAssignee().getPlayerInitials().equals( player.getPlayerInitials() ) ){
                     boxesByPlayer ++;
                 }
             }
@@ -213,12 +213,15 @@ public class BoxController
         this.setMarkedValues( box );
         this.setAssignedBox( box,player );
 
+        System.out.println( "Marcado izquierda en posicion: " + box.getBoxId() );
+
         if ( searchLeftBox( box.getRowPosition(),box.getColPosition() ) != -1){
             int leftBoxId = searchLeftBox( box.getRowPosition(),box.getColPosition() );
             Box leftBox = this.searchBoxById( leftBoxId );
             leftBox.setRightSide( true );
             this.setMarkedValues( leftBox );
             this.setAssignedBox( leftBox,player );
+            System.out.println( "Marcado derecha en posicion: " + leftBox.getBoxId() );
         }
     }
     /**
@@ -232,12 +235,15 @@ public class BoxController
         this.setMarkedValues( box );
         this.setAssignedBox( box,player );
 
+        System.out.println( "Marcado derecha en posicion: " + box.getBoxId() );
+
         if ( searchRightBox( box.getRowPosition(),box.getColPosition() ) != -1){
             int rightBoxId = searchRightBox( box.getRowPosition(),box.getColPosition() );
             Box rightBox = this.searchBoxById( rightBoxId );
             rightBox.setLeftSide( true );
             this.setMarkedValues( rightBox );
             this.setAssignedBox( rightBox,player );
+            System.out.println( "Marcado izquierda en posicion: " + rightBox.getBoxId() );
         }
     }
 
@@ -246,12 +252,15 @@ public class BoxController
         this.setMarkedValues( box );
         this.setAssignedBox( box,player );
 
+        System.out.println( "Marcado arriba en posicion: " + box.getBoxId() );
+
         if ( searchUpBox( box.getRowPosition(),box.getColPosition() ) != -1){
             int upBoxId = searchUpBox( box.getRowPosition(),box.getColPosition() );
             Box upperBox = this.searchBoxById( upBoxId );
             upperBox.setDownSide( true );
             this.setMarkedValues( upperBox );
             this.setAssignedBox( upperBox,player );
+            System.out.println( "Marcado abajo en posicion: " + upperBox.getBoxId() );
         }
     }
 
@@ -260,12 +269,15 @@ public class BoxController
         this.setMarkedValues( box );
         this.setAssignedBox( box,player );
 
+        System.out.println( "Marcado abajo en posicion: " + box.getBoxId() );
+
         if ( searchDownBox( box.getRowPosition(),box.getColPosition() ) != -1){
             int downBoxId = searchDownBox( box.getRowPosition(),box.getColPosition() );
             Box downBox = this.searchBoxById( downBoxId );
             downBox.setUpSide( true );
             this.setMarkedValues( downBox );
             this.setAssignedBox( downBox,player );
+            System.out.println( "Marcado arriba en posicion: " + downBox.getBoxId() );
 
         }
     }
