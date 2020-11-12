@@ -25,8 +25,8 @@ public class GameController
     public void initAndFillGameBoard( int rows, int cols){
 
         this.gameMatrixController = new GameMatrixController( rows, cols );
-        this.boxController = new BoxController( gameMatrixController.getGameMatrix().getMatrix() );
-        this.gameMatrixController.completeGameMatrix( this.boxController );
+        BoxController.boxMatrix = gameMatrixController.getGameMatrix().getMatrix();
+        this.gameMatrixController.completeGameMatrix();
     }
 
     public BoxController getBoxController()
@@ -35,11 +35,11 @@ public class GameController
     }
 
     public void printMatrix(){
-        this.gameMatrixController.printMatrix( this.boxController.getBoxMatrix() );
+        this.gameMatrixController.printMatrix( BoxController.boxMatrix );
     }
 
     public String showAvailableSides( Box box ){
-        char[] positions= this.boxController.getAvailablePositions( box );
+        char[] positions= BoxController.getAvailablePositions( box );
         String result = "";
 
         for ( int i = 0; i <positions.length ; i++ )
@@ -55,7 +55,7 @@ public class GameController
     }
 
     public String availablePositionsList(){
-        Box[] boxesAvailable = this.boxController.getAvailableBoxes();
+        Box[] boxesAvailable = BoxController.getAvailableBoxes();
         String result = "Posiciones Disponibles: \n" ;
         for ( int i = 0; i <boxesAvailable.length ; i++ )
         {
@@ -66,7 +66,7 @@ public class GameController
 
     public int[] getBoxesPositions(){
 
-        Box[] boxArray = this.boxController.getAvailableBoxes();
+        Box[] boxArray = BoxController.getAvailableBoxes();
         int[] positions = new int[boxArray.length];
 
         for ( int i = 0; i <positions.length ; i++ )
@@ -83,14 +83,14 @@ public class GameController
     }
 
     public boolean areAvailablePositions(){
-        return this.boxController.getAvailableBoxes().length>0;
+        return BoxController.getAvailableBoxes().length>0;
     }
 
     public boolean createMove( Player currentPlayer,Box box, int position, char side){
-        boolean madeMove = false;
-        if ( !validSide( side,box )|| !validPosition( position ) ){
-            return madeMove;
-        }
+//        boolean madeMove = false;
+//        if ( !validSide( side,box )|| !validPosition( position ) ){
+//            return madeMove;
+//        }
 
         markMove( side, box,currentPlayer );
         return true;
@@ -99,13 +99,13 @@ public class GameController
     private void markMove(char side, Box box, Player player){
         side = convertChar( side );
         switch ( side ){
-            case 'L': this.getBoxController().markLeftSide( box,player );
+            case 'L': BoxController.markLeftSide( box,player );
             break;
-            case 'R': this.getBoxController().markRightSide( box,player );
+            case 'R': BoxController.markRightSide( box,player );
                 break;
-            case 'U': this.getBoxController().markUppertSide( box,player );
+            case 'U': BoxController.markUppertSide( box,player );
                 break;
-            case 'D': this.getBoxController().markDownSide( box,player );
+            case 'D': BoxController.markDownSide( box,player );
                 break;
         }
     }
@@ -126,7 +126,7 @@ public class GameController
 
     private boolean validSide(char side, Box box){
         side = this.convertChar( side );
-        char [] sidesPerBox = this.getBoxController().getAvailablePositions( box );
+        char [] sidesPerBox = BoxController.getAvailablePositions( box );
         for ( int i = 0; i <sidesPerBox.length ; i++ )
         {
             if ( sidesPerBox[i] == side ){

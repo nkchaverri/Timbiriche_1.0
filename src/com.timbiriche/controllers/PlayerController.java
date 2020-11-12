@@ -18,7 +18,7 @@ public class PlayerController
 
     }
 
-    private void createPlayerFile(){
+    public void createPlayerFile(){
         fileUtils.createFile( this.availablePlayers );
     }
 
@@ -33,6 +33,16 @@ public class PlayerController
         {
             if ( this.availablePlayers[i].getPlayerID() == id ){
                 return this.availablePlayers[i];
+            }
+        }
+        return null;
+    }
+
+    public Player getComputerPlayer(){
+        for ( int i = 0; i <this.players.length ; i++ )
+        {
+            if ( this.players[i].isComputer()){
+                return this.players[i];
             }
         }
         return null;
@@ -94,7 +104,7 @@ public class PlayerController
         int count = 0;
         for ( int i = 0; i <this.players.length ; i++ )
         {
-            if ( this.players[i] != null )
+            if ( this.players[i] != null && !this.players[i].isComputer() )
             {
                 count++;
             }
@@ -118,11 +128,13 @@ public class PlayerController
     public Player[] getAvailablePlayers(){
 
         this.availablePlayers = new Player[this.playersCreated()];
+        int position = 0;
         for ( int i = 0; i <this.players.length ; i++ )
         {
-            if ( this.players[i] != null )
+            if ( this.players[i] != null && !this.players[i].isComputer() )
             {
-                this.availablePlayers[i] = this.players[i];
+                this.availablePlayers[position] = this.players[i];
+                position ++;
             }
         }
         return this.availablePlayers ;

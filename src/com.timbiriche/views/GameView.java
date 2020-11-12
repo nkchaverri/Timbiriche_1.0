@@ -1,4 +1,6 @@
 package com.timbiriche.views;
+import com.timbiriche.Utils.ArtificialIntelligence;
+import com.timbiriche.controllers.BoxController;
 import com.timbiriche.controllers.GameController;
 import com.timbiriche.models.Box;
 import com.timbiriche.models.Player;
@@ -10,6 +12,10 @@ public class GameView
     private GameController gameController;
     private Player player1;
     private Player player2;
+
+    private Box[][] boxMatrix;
+
+    private Box requestedBox;
 
     private int[] rowsColsAvailableRange = {2,3,4,5,6,7,8,9,10};
 
@@ -82,6 +88,8 @@ public class GameView
         this.gameController.getPlayerController().getAvailabePlayersList();
 
         this.gameController.initAndFillGameBoard( this.rows, this.cols );
+        this.boxMatrix = BoxController.boxMatrix;
+
         this.gameController.printMatrix();
 
         //request option for players
@@ -95,9 +103,11 @@ public class GameView
                 this.player2 = this.gameController.getPlayerController().getPlayerById( playerId);
             }while ( this.player2 == null );
 
-            this.twoPlayersGame( this.player1,this.player2 );
+            this.play( this.player1,this.player2, false, false );
+        }else if ( gameOption == '2' ){
+            this.player2 = this.gameController.getPlayerController().getComputerPlayer();
+            this.play( this.player1, this.player2, true, false );
         }
-
 
     }
 
@@ -219,62 +229,69 @@ public class GameView
         }
     }
 
-    public void twoPlayersGame(Player player1, Player player2){
+    public void play(Player player1, Player player2, boolean isEasy, boolean isMedium){
 
         Player firstPlayer;
         Player secondPlayer;
         Player awaitPlayer;
 
+        int position = 0;
+        char side = ' ';
+
         int id1 =player1.getPlayerID();
         int id2 =player2.getPlayerID();
 
         int randomPlayerId = this.gameController.getPlayerController().getRandomPlayerId( id1,id2 );
-//        System.out.println("Random ID: "+ randomPlayerId );
 
         firstPlayer = player1.getPlayerID() == randomPlayerId ? player1:player2;
         secondPlayer = player1.getPlayerID() != randomPlayerId ? player1:player2;
 
         do{
-//            System.out.println("First player: "+ firstPlayer.toString() );
-//            System.out.println("Second player: "+ secondPlayer.toString() );
             this.showMessage( "****************************************************************************************" );
             this.showMessage( "\t\t Jugador en turno: " + firstPlayer.getPlayerInitials() +"\t\t" +
-                                "Marcador para: " +firstPlayer.getPlayerInitials() + "\t"+this.gameController.getBoxController().boxesByPlayer( firstPlayer )  +"\t\t" +
-                                    "Marcador para: " +secondPlayer.getPlayerInitials() + "\t"+this.gameController.getBoxController().boxesByPlayer( secondPlayer ) );
+                                "Marcador para: " +firstPlayer.getPlayerInitials() + "\t"+BoxController.boxesByPlayer( firstPlayer )  +"\t\t" +
+                                    "Marcador para: " +secondPlayer.getPlayerInitials() + "\t"+BoxController.boxesByPlayer( secondPlayer ) );
             this.showMessage( "****************************************************************************************" );
 
             this.gameController.printMatrix();
 
-            this.showMessage( this.gameController.availablePositionsList() );
-            int[] boxPositions = this.gameController.getBoxesPositions();
-            int position =  Integer.parseInt( this.requestNumberInRange( "Ingrese el numero de la posicion que desea marcar: ", boxPositions ) );
-            Box requestedBox = this.gameController.getBoxController().searchBoxById( position );
+            if ( !firstPlayer.isComputer() ){
+                position = this.getPositionRequested();
+                this.requestedBox  = BoxController.searchBoxById(position);
+                side = this.getSideRequested();
+            }
 
-//            this.showMessage( "Box requested: "+ requestedBox.toString() );
-            this.showMessage( this.gameController.showAvailableSides( requestedBox ) );
+            if ( firstPlayer.isComputer() ){
+                if ( isEasy ){
+                    position =ArtificialIntelligence.aiEasyGetBoxId(this.boxMatrix);
+                    System.out.println( "COM escogio posicion: " + position );
+                    this.requestedBox = BoxController.searchBoxById(position);
+                    side = ArtificialIntelligence.aiEasyGetLineChar( this.requestedBox );
+                    System.out.println( "COM escogio lado: " + side );
+                }else if ( isMedium ){
 
-            char[] sides = this.gameController.getPosiblePositions();
-            char side =  this.requestChar( "Escoja el lado que desea marcar: ", sides ) ;
+                }else {
 
-//            this.showMessage( "Side selected : " + side );
+                }
+            }
 
-            if ( this.gameController.createMove( firstPlayer,requestedBox, position, side ) ){
-//                System.out.println( "MAKE A MOVE" );
+            if ( this.gameController.createMove( firstPlayer, this.requestedBox, position, side ) ){
                 awaitPlayer = firstPlayer;
                 firstPlayer = secondPlayer;
                 secondPlayer = awaitPlayer;
             }
         }while (this.gameController.areAvailablePositions());
+
         this.showMessage( "-------------------------------------------------------------------------------------------------------------------------------" );
         this.gameController.printMatrix();
         this.showMessage( "MARCADOR FINAL: \n"  );
-        this.showMessage( "Marcador para: " +firstPlayer.getPlayerInitials() + "\t"+this.gameController.getBoxController().boxesByPlayer( firstPlayer ) );
-        this.showMessage( "Marcador para: " +secondPlayer.getPlayerInitials() + "\t"+this.gameController.getBoxController().boxesByPlayer( secondPlayer ) );
-        if (this.gameController.getBoxController().boxesByPlayer( firstPlayer ) >  this.gameController.getBoxController().boxesByPlayer( secondPlayer )  ){
+        this.showMessage( "Marcador para: " +firstPlayer.getPlayerInitials() + "\t"+BoxController.boxesByPlayer( firstPlayer ) );
+        this.showMessage( "Marcador para: " +secondPlayer.getPlayerInitials() + "\t"+BoxController.boxesByPlayer( secondPlayer ) );
+        if (BoxController.boxesByPlayer( firstPlayer ) >  BoxController.boxesByPlayer( secondPlayer )  ){
             firstPlayer.setPoints( firstPlayer.getPoints()+1 );
             firstPlayer.setWonGames( firstPlayer.getWonGames() + 1 );
             this.showMessage( "GANDOR: " + firstPlayer.getPlayerInitials());
-        }else if (  this.gameController.getBoxController().boxesByPlayer( secondPlayer ) >  this.gameController.getBoxController().boxesByPlayer( firstPlayer ) ){
+        }else if (  BoxController.boxesByPlayer( secondPlayer ) >  BoxController.boxesByPlayer( firstPlayer ) ){
             secondPlayer.setPoints( secondPlayer.getPoints() +1 );
             secondPlayer.setWonGames( firstPlayer.getWonGames() + 1 );
             this.showMessage( "GANDOR: " + secondPlayer.getPlayerInitials());
@@ -283,5 +300,20 @@ public class GameView
             secondPlayer.setPoints( secondPlayer.getPoints() +0.5 );
             this.showMessage( "EMPATE" );
         }
+    }
+
+    public int getPositionRequested(){
+        this.showMessage( this.gameController.availablePositionsList() );
+        int[] boxPositions = this.gameController.getBoxesPositions();
+        int position =  Integer.parseInt( this.requestNumberInRange( "Ingrese el numero de la posicion que desea marcar: ", boxPositions ) );
+
+        return position;
+    }
+
+    public char getSideRequested(){
+        this.showMessage( this.gameController.showAvailableSides( this.requestedBox ) );
+        char[] sides = this.gameController.getPosiblePositions();
+        char side =  this.requestChar( "Escoja el lado que desea marcar: ", sides ) ;
+        return side;
     }
 }

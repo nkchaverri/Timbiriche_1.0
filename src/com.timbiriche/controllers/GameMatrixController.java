@@ -34,13 +34,13 @@ public class GameMatrixController
         return this.gameMatrix;
     }
 
-    public void completeGameMatrix( BoxController boxController){
+    public void completeGameMatrix(){
         int boxId = 1;
         for ( int row = 0; row <this.gameMatrix.getMatrix().length ; row++ )
         {
             for ( int col = 0; col <this.gameMatrix.getMatrix()[row].length ; col++, boxId++ )
             {
-                this.gameMatrix.getMatrix()[row][col] = boxController.createBoxModel( boxId, col, row );
+                this.gameMatrix.getMatrix()[row][col] = BoxController.createBoxModel( boxId, col, row );
             }
         }
     }

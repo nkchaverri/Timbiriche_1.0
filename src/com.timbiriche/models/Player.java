@@ -7,6 +7,17 @@ public class Player implements Serializable
     private String playerInitials;
     private int wonGames;
     private double points;
+    private boolean isComputer;
+
+    public boolean isComputer()
+    {
+        return isComputer;
+    }
+
+    public void setComputer( boolean computer )
+    {
+        isComputer = computer;
+    }
 
     public Player( int playerID, String playerInitials )
     {
@@ -14,6 +25,7 @@ public class Player implements Serializable
         this.playerInitials = playerInitials;
         this.wonGames = 0;
         this.points = 0.0;
+        this.isComputer = false;
     }
 
     public int getPlayerID()
