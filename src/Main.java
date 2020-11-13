@@ -9,20 +9,18 @@ public class Main
     {
         GameView gv = new GameView();
        gv.initializeGame();
-
-
-//        GameController gameController= new GameController();
-//        gameController.intilizePlayers();
+//
+//
+////        GameController gameController= new GameController();
+////        gameController.intilizePlayers();
 //        PlayerController pc = new PlayerController();
-//        Player player1 = pc.createNewPlayer( 00001,"LM" );
+//        Player player1 = pc.createNewPlayer( 1001,"LM" );
 //        player1.setPoints( 3.5 );
-//        Player player2 = pc.createNewPlayer( 00002,"NC" );
+//        Player player2 = pc.createNewPlayer( 1002,"NC" );
 //        player2.setPoints( 3.0 );
-//        Player player3 = pc.createNewPlayer( 00, "COM" );
+//        Player player3 = pc.createNewPlayer( 99999999, "COM" );
 //        player3.setComputer( true );
 //
 //        pc.createPlayerFile();
-//        gameController.twoPlayersGame( player1,player2  );
-
     }
 }

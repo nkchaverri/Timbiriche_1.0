@@ -149,9 +149,10 @@ public class PlayerController
         String result="";
         for ( int i = 0; i <playersToPrint.length ; i++ )
         {
-            result += " Player ID: " + playersToPrint[i].getPlayerID() + ", Initials: "
-                                        + playersToPrint[i].getPlayerInitials() + ", Total of Points: "
-                                            + playersToPrint[i].getPoints() + " \n";
+            result += " Id Jugador: " + playersToPrint[i].getPlayerID() +
+                        ", Iniciales: " + playersToPrint[i].getPlayerInitials() +
+                            ", Total de puntos: " + playersToPrint[i].getPoints() +
+                                ", Juegos Ganados : " + playersToPrint[i].getWonGames()+" \n";
         }
         return result;
     }

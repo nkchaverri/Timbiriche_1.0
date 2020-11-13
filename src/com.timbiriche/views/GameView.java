@@ -107,8 +107,10 @@ public class GameView
         }else if ( gameOption == '2' ){
             this.player2 = this.gameController.getPlayerController().getComputerPlayer();
             this.play( this.player1, this.player2, true, false );
+        }else if(gameOption == '3' ){
+            this.player2 = this.gameController.getPlayerController().getComputerPlayer();
+            this.play( this.player1, this.player2, false, true );
         }
-
     }
 
     private void endGame(){
@@ -259,19 +261,22 @@ public class GameView
                 position = this.getPositionRequested();
                 this.requestedBox  = BoxController.searchBoxById(position);
                 side = this.getSideRequested();
+                side = GameController.convertChar( side );
             }
 
             if ( firstPlayer.isComputer() ){
                 if ( isEasy ){
                     position =ArtificialIntelligence.aiEasyGetBoxId(this.boxMatrix);
-                    System.out.println( "COM escogio posicion: " + position );
+                    System.out.println( "COM escogio Posicion: " + position + "\t\t\t");
                     this.requestedBox = BoxController.searchBoxById(position);
                     side = ArtificialIntelligence.aiEasyGetLineChar( this.requestedBox );
-                    System.out.println( "COM escogio lado: " + side );
+                    System.out.print( "Lado: " + GameController.convertCharToName( side ) + "\n" );
                 }else if ( isMedium ){
-
-                }else {
-
+                        position =ArtificialIntelligence.aiIntermediateGetBoxId(this.boxMatrix);
+                            System.out.print( "COM-MED escogio Posicion: " + position + "\t\t\t");
+                        this.requestedBox = BoxController.searchBoxById(position);
+                        side = ArtificialIntelligence.aiIntermediateGetLineChar( this.requestedBox );
+                            System.out.print( "Lado: " + GameController.convertCharToName( side )+ "\n");
                 }
             }
 
@@ -293,7 +298,7 @@ public class GameView
             this.showMessage( "GANDOR: " + firstPlayer.getPlayerInitials());
         }else if (  BoxController.boxesByPlayer( secondPlayer ) >  BoxController.boxesByPlayer( firstPlayer ) ){
             secondPlayer.setPoints( secondPlayer.getPoints() +1 );
-            secondPlayer.setWonGames( firstPlayer.getWonGames() + 1 );
+            secondPlayer.setWonGames( secondPlayer.getWonGames() + 1 );
             this.showMessage( "GANDOR: " + secondPlayer.getPlayerInitials());
         }else {
             firstPlayer.setPoints( firstPlayer.getPoints()+0.5 );

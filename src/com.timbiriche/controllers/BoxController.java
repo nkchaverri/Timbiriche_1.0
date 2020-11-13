@@ -43,7 +43,7 @@ public class BoxController
         return searchBox( row,col );
     }
 
-    private static int searchDownBox( int row, int col){
+    public static int searchDownBox( int row, int col){
 
         if ( invalidPositions( row, col ) ){
             return -1;
@@ -57,7 +57,7 @@ public class BoxController
         return searchBox( row,col );
     }
 
-    private static int searchLeftBox( int row, int col){
+    public static int searchLeftBox( int row, int col){
 
         if ( invalidPositions( row, col ) ){
             return -1;
@@ -72,7 +72,7 @@ public class BoxController
         return searchBox( row,col );
     }
 
-    private static int searchRightBox( int row, int col){
+    public static int searchRightBox( int row, int col){
 
         if ( invalidPositions( row, col ) ){
             return -1;
@@ -195,7 +195,7 @@ public class BoxController
         setMarkedValues( box );
         setAssignedBox( box,player );
 
-        System.out.println( "Marcado izquierda en posicion: " + box.getBoxId() );
+//        System.out.println( "Marcado izquierda en posicion: " + box.getBoxId() );
 
         if ( searchLeftBox( box.getRowPosition(),box.getColPosition() ) != -1){
             int leftBoxId = searchLeftBox( box.getRowPosition(),box.getColPosition() );
@@ -203,7 +203,7 @@ public class BoxController
             leftBox.setRightSide( true );
             setMarkedValues( leftBox );
             setAssignedBox( leftBox,player );
-            System.out.println( "Marcado derecha en posicion: " + leftBox.getBoxId() );
+//            System.out.println( "Marcado derecha en posicion: " + leftBox.getBoxId() );
         }
     }
     /**
@@ -217,7 +217,7 @@ public class BoxController
         setMarkedValues( box );
         setAssignedBox( box,player );
 
-        System.out.println( "Marcado derecha en posicion: " + box.getBoxId() );
+//        System.out.println( "Marcado derecha en posicion: " + box.getBoxId() );
 
         if ( searchRightBox( box.getRowPosition(),box.getColPosition() ) != -1){
             int rightBoxId = searchRightBox( box.getRowPosition(),box.getColPosition() );
@@ -225,7 +225,7 @@ public class BoxController
             rightBox.setLeftSide( true );
             setMarkedValues( rightBox );
             setAssignedBox( rightBox,player );
-            System.out.println( "Marcado izquierda en posicion: " + rightBox.getBoxId() );
+//            System.out.println( "Marcado izquierda en posicion: " + rightBox.getBoxId() );
         }
     }
 
@@ -234,7 +234,7 @@ public class BoxController
         setMarkedValues( box );
         setAssignedBox( box,player );
 
-        System.out.println( "Marcado arriba en posicion: " + box.getBoxId() );
+//        System.out.println( "Marcado arriba en posicion: " + box.getBoxId() );
 
         if ( searchUpBox( box.getRowPosition(),box.getColPosition() ) != -1){
             int upBoxId = searchUpBox( box.getRowPosition(),box.getColPosition() );
@@ -242,7 +242,7 @@ public class BoxController
             upperBox.setDownSide( true );
             setMarkedValues( upperBox );
             setAssignedBox( upperBox,player );
-            System.out.println( "Marcado abajo en posicion: " + upperBox.getBoxId() );
+//            System.out.println( "Marcado abajo en posicion: " + upperBox.getBoxId() );
         }
     }
 
@@ -251,7 +251,7 @@ public class BoxController
         setMarkedValues( box );
         setAssignedBox( box,player );
 
-        System.out.println( "Marcado abajo en posicion: " + box.getBoxId() );
+//        System.out.println( "Marcado abajo en posicion: " + box.getBoxId() );
 
         if ( searchDownBox( box.getRowPosition(),box.getColPosition() ) != -1){
             int downBoxId = searchDownBox( box.getRowPosition(),box.getColPosition() );
@@ -259,7 +259,7 @@ public class BoxController
             downBox.setUpSide( true );
             setMarkedValues( downBox );
             setAssignedBox( downBox,player );
-            System.out.println( "Marcado arriba en posicion: " + downBox.getBoxId() );
+//            System.out.println( "Marcado arriba en posicion: " + downBox.getBoxId() );
 
         }
     }

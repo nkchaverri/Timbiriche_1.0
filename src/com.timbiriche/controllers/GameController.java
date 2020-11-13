@@ -87,20 +87,18 @@ public class GameController
     }
 
     public boolean createMove( Player currentPlayer,Box box, int position, char side){
-//        boolean madeMove = false;
-//        if ( !validSide( side,box )|| !validPosition( position ) ){
-//            return madeMove;
-//        }
-
+        boolean madeMove = false;
+        if ( !validSide( side,box )|| !validPosition( position ) ){
+            return madeMove;
+        }
         markMove( side, box,currentPlayer );
         return true;
     }
 
     private void markMove(char side, Box box, Player player){
-        side = convertChar( side );
         switch ( side ){
             case 'L': BoxController.markLeftSide( box,player );
-            break;
+                break;
             case 'R': BoxController.markRightSide( box,player );
                 break;
             case 'U': BoxController.markUppertSide( box,player );
@@ -110,7 +108,7 @@ public class GameController
         }
     }
 
-    private char convertChar( char side){
+    public static char convertChar( char side){
         switch ( side ){
             case 'I': side = 'L';
                 break;
@@ -124,8 +122,22 @@ public class GameController
         return side;
     }
 
+    public static String convertCharToName( char side){
+        String sideName = "";
+        switch ( side ){
+            case 'L': sideName = "I: Izquierdo";
+                break;
+            case 'R': sideName = "D: Derecho";
+                break;
+            case 'U' : sideName = "S: Superior";
+                break;
+            case 'D' : sideName = "A: Abajo";
+                break;
+        }
+        return sideName;
+    }
+
     private boolean validSide(char side, Box box){
-        side = this.convertChar( side );
         char [] sidesPerBox = BoxController.getAvailablePositions( box );
         for ( int i = 0; i <sidesPerBox.length ; i++ )
         {
