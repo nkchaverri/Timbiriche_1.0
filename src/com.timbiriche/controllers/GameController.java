@@ -39,6 +39,12 @@ public class GameController
         this.gameMatrixController.printMatrix( BoxController.boxMatrix );
     }
 
+    /**
+     * Shows all available sides changing english chars
+     * to spanish names
+     * @param box
+     * @return
+     */
     public String showAvailableSides( Box box ){
         char[] positions= BoxController.getAvailablePositions( box );
         String result = "";
@@ -55,6 +61,10 @@ public class GameController
         return result;
     }
 
+    /**
+     * returns a string with all the available positions
+     * @return
+     */
     public String availablePositionsList(){
         Box[] boxesAvailable = BoxController.getAvailableBoxes();
         String result = "Posiciones Disponibles: \n" ;
@@ -66,7 +76,6 @@ public class GameController
     }
 
     public int[] getBoxesPositions(){
-
         Box[] boxArray = BoxController.getAvailableBoxes();
         int[] positions = new int[boxArray.length];
 
@@ -87,6 +96,14 @@ public class GameController
         return BoxController.getAvailableBoxes().length>0;
     }
 
+    /**
+     * creates a move when position and side are valid
+     * @param currentPlayer
+     * @param box
+     * @param position
+     * @param side
+     * @return
+     */
     public boolean createMove( Player currentPlayer,Box box, int position, char side){
         if ( !validSide( side,box )|| !validPosition( position ) ){
             return false;
@@ -132,6 +149,12 @@ public class GameController
         return madeMove;
     }
 
+    /**
+     * mark move according to the side selected
+     * @param side
+     * @param box
+     * @param player
+     */
     private void markMove(char side, Box box, Player player){
         switch ( side ){
             case 'L': BoxController.markLeftSide( box,player );
@@ -145,6 +168,12 @@ public class GameController
         }
     }
 
+    /**
+     * convert char from the UI to the one used in the
+     * backend
+     * @param side
+     * @return
+     */
     public static char convertChar( char side){
         switch ( side ){
             case 'I': side = 'L';
@@ -159,6 +188,12 @@ public class GameController
         return side;
     }
 
+    /**
+     * returns side name in spanish
+     * used for com moves
+     * @param side
+     * @return
+     */
     public static String convertCharToName( char side){
         String sideName = "";
         switch ( side ){

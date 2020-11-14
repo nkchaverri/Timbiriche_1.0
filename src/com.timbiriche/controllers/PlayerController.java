@@ -23,16 +23,32 @@ public class PlayerController
         initializePlayers();
     }
 
+    /**
+     * This method create players file to persist
+     * any players created
+     */
     public void createPlayerFile(){
         fileUtils.createFile( this.availablePlayers );
     }
 
+    /**
+     * Receives two integers and gets one randomly
+     * to get the first player to move
+     * @param id1
+     * @param id2
+     * @return
+     */
     public int getRandomPlayerId( int id1, int id2){
 
         int randomOfTwoInts = new Random().nextBoolean() ? id1 : id2;
         return randomOfTwoInts;
     }
 
+    /**
+     * Retrieve player object by its id
+     * @param id
+     * @return
+     */
     public Player getPlayerById(int id){
         for ( int i = 0; i <this.availablePlayers.length ; i++ )
         {
@@ -43,6 +59,11 @@ public class PlayerController
         return null;
     }
 
+    /**
+     * search and return player created as
+     * computer
+     * @return
+     */
     public Player getComputerPlayer(){
         for ( int i = 0; i <this.players.length ; i++ )
         {
@@ -53,11 +74,20 @@ public class PlayerController
         return null;
     }
 
+    /**
+     * initialize players by reading anything already included
+     * in the file "Players.txt"
+     */
     private void initializePlayers(){
       this.fileUtils.importPlayers( this.players );
       this.getAvailablePlayers();
     }
 
+    /**
+     * Evaluate if there is a player with that id
+     * @param id
+     * @return
+     */
     public boolean playerExist( int id ){
         for ( int i = 0; i <this.availablePlayers.length ; i++ )
         {
@@ -70,7 +100,7 @@ public class PlayerController
 
     /**
      * evaluates if there is an existing player
-     * by its id
+     * by its initials
      * @param initials
      * @return
      */
@@ -116,6 +146,10 @@ public class PlayerController
         }
     }
 
+    /**
+     * count for all the players created
+     * @return
+     */
     private int playersCreated(){
         int count = 0;
         for ( int i = 0; i <this.players.length ; i++ )
