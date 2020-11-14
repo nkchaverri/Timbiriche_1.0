@@ -25,21 +25,33 @@ public class BoxController
         return boxMatrix;
     }
 
+    /**
+     * recives all the information to create and object model
+     * @param id
+     * @param colPos
+     * @param rowPos
+     * @return
+     */
     public static Box createBoxModel( int id, int colPos, int rowPos){
 
         if ( id <= 0 ){
             return null;
         }
-
         return  new Box( id, colPos,rowPos );
     }
 
+    /**
+     * Method used to search if there is any box above
+     * the current box selected
+     * @param row
+     * @param col
+     * @return
+     */
     public static int searchUpBox( int row, int col){
 
         if ( invalidPositions( row, col ) ){
             return -1;
         }
-
         if ( row -1 < 0 ){
             return -1;
         }else{
@@ -49,6 +61,14 @@ public class BoxController
         return searchBox( row,col );
     }
 
+
+    /**
+     * Method used to search if there is any box below
+     * the current box selected
+     * @param row
+     * @param col
+     * @return
+     */
     public static int searchDownBox( int row, int col){
 
         if ( invalidPositions( row, col ) ){
@@ -63,6 +83,13 @@ public class BoxController
         return searchBox( row,col );
     }
 
+    /**
+     * Method used to search if there is any box to the left
+     * the current box selected
+     * @param row
+     * @param col
+     * @return
+     */
     public static int searchLeftBox( int row, int col){
 
         if ( invalidPositions( row, col ) ){
@@ -78,6 +105,13 @@ public class BoxController
         return searchBox( row,col );
     }
 
+    /**
+     * Method used to search if there is any box to the right
+     * the current box selected
+     * @param row
+     * @param col
+     * @return
+     */
     public static int searchRightBox( int row, int col){
 
         if ( invalidPositions( row, col ) ){
@@ -105,6 +139,13 @@ public class BoxController
         return false;
     }
 
+    /**
+     * Search boxes using its position and based in the binary
+     * search algorithm
+     * @param row
+     * @param col
+     * @return
+     */
     public static int searchBox( int row, int col){
         int low = 1;
         int high = boxMatrix.length * boxMatrix[0].length;
@@ -122,6 +163,11 @@ public class BoxController
         return -1;
     }
 
+    /**
+     * returns the box object linked to the id provided
+     * @param id
+     * @return
+     */
     public static Box searchBoxById( int id ){
         for ( int row = 0; row <boxMatrix.length ; row++ )
         {
@@ -135,6 +181,12 @@ public class BoxController
         return null;
     }
 
+    /**
+     * return how many boxes has one player
+     * assigned
+     * @param player
+     * @return
+     */
     public static int boxesByPlayer( Player player ){
 
         int boxesByPlayer = 0;
@@ -150,7 +202,11 @@ public class BoxController
         return boxesByPlayer;
     }
 
-
+    /**
+     * verifies if a particular box has any position left
+     * and increases the count
+     * @param box
+     */
     private static void setMarkedValues( Box box){
         int markedPositions = box.getMarkedPositions();
 
@@ -161,9 +217,6 @@ public class BoxController
         box.setMarkedPositions( markedPositions );
     }
 
-    public boolean allSidesAvailable( Box box){
-        return !box.isLeftSide() && !box.isDownSide() && !box.isRightSide() && !box.isUpSide();
-    }
 
     /**
      * method used to mark the letter if the side is available
@@ -219,9 +272,8 @@ public class BoxController
         setNextBox(leftBox);
     }
     /**
-     * method used to mark right side of an element
-     * and the lef side if there is an element
-     * on the right
+     * methods used to mark the corresponding side of an element
+     * and any object next to it if there is any
      * @param box
      */
     public static void markRightSide( Box box, Player player){
@@ -279,6 +331,10 @@ public class BoxController
         }
     }
 
+    /**
+     * count for not assigned boxes
+     * @return
+     */
     private static int notAssignedBoxes()
     {
         int notAssignedBoxes = 0;

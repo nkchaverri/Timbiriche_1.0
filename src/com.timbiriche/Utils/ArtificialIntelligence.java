@@ -5,6 +5,11 @@ import com.timbiriche.models.Box;
 
 import java.util.Random;
 
+/**
+ * Class create to handle easy and intermediate computer moves
+ * @author nchaverri
+ */
+
 public class ArtificialIntelligence
 {
     public static int aiEasyGetBoxId(Box[][] matrix) {
@@ -22,7 +27,6 @@ public class ArtificialIntelligence
 //        System.out.println( "boxesWithOneOrZeroMarkedLines: " + Arrays.toString( boxesWithOneOrZeroMarkedLines ) );
         shuffleArray(boxesWithOneOrZeroMarkedLines);
 //        System.out.println( "boxesWithOneOrZeroMarkedLines after shuffle: " + Arrays.toString( boxesWithOneOrZeroMarkedLines ) );
-
         for (int index = 0; index < boxesWithOneOrZeroMarkedLines.length; index++) {
             Box currentBox = BoxController.searchBoxById(boxesWithOneOrZeroMarkedLines[index]);
             if (canBoxHandleIntelligentMove(currentBox)) {
@@ -34,9 +38,7 @@ public class ArtificialIntelligence
         if (boxId == 0) {
             boxId = getRandomElementFromArray(getBoxesWithEmptyLines(matrix, 3, 0));
         }
-
 //        System.out.println("final boxId: " + boxId);
-
         return boxId;
     }
 
@@ -103,10 +105,8 @@ public class ArtificialIntelligence
                 }
             }
         }
-
         return possibleLine;
     }
-
 
     private static boolean canBoxHandleIntelligentMove(Box box) {
         return getPossibleLine(box) != ' ';
@@ -126,14 +126,12 @@ public class ArtificialIntelligence
             }
 //            System.out.println();
         }
-
         int zeroCount = 0;
         for (int i = 0; i < idOfBoxesWithEmptyLinesDirty.length; i++) {
             if (idOfBoxesWithEmptyLinesDirty[i] == 0) {
                 zeroCount++;
             }
         }
-
         int[] idOfBoxesWithEmptyLinesClean = new int[idOfBoxesWithEmptyLinesDirty.length-zeroCount];
         for (int i = 0, indexForClean = 0; i < idOfBoxesWithEmptyLinesDirty.length; i++) {
             int boxId = idOfBoxesWithEmptyLinesDirty[i];
@@ -142,7 +140,6 @@ public class ArtificialIntelligence
                 indexForClean++;
             }
         }
-
         return idOfBoxesWithEmptyLinesClean;
     }
 
@@ -164,7 +161,6 @@ public class ArtificialIntelligence
                 indexForNotMarkedLines++;
             }
         }
-
         return notMarkedLines;
     }
 

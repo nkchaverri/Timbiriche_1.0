@@ -6,6 +6,12 @@ import com.timbiriche.models.Box;
 import com.timbiriche.models.Player;
 import java.util.Scanner;
 
+/**
+ * Class that handle user communication and game interaccions
+ * with main controllers
+ * @author nchaverri
+ */
+
 public class GameView
 {
     Scanner input;

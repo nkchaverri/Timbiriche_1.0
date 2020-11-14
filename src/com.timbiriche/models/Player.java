@@ -1,6 +1,11 @@
 package com.timbiriche.models;
 import java.io.Serializable;
 
+/**
+ * Players model.
+ * It has all the attributes related to a player
+ */
+
 public class Player implements Serializable
 {
     private int playerID;

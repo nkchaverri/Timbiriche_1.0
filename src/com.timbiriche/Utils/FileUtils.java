@@ -2,6 +2,12 @@ package com.timbiriche.Utils;
 import com.timbiriche.models.Player;
 import java.io.*;
 
+/**
+ * Class created to create and import players
+ * from txt file
+ * @author nchaverri
+ */
+
 public class FileUtils
 {
     public void createFile( Player[] players){
