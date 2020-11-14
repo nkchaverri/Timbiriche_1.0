@@ -3,6 +3,8 @@ package com.timbiriche.controllers;
 import com.timbiriche.models.Box;
 import com.timbiriche.models.Player;
 
+import java.util.Arrays;
+
 /**
  * @author nchaverri
  * @version 1.0
@@ -12,6 +14,10 @@ public class BoxController
     public static Box [][] boxMatrix;
     public static Box[] availableBoxes;
     public static char[] availablePositions;
+
+    public static boolean boxAssigned;
+
+    public static Box nextBox;
 
 
     public Box[][] getBoxMatrix()
@@ -184,6 +190,10 @@ public class BoxController
         }
     }
 
+    private static void setNextBox(Box box){
+        nextBox = box;
+    }
+
     /**
      * method used to mark left side of an element
      * and the right side if there is an element
@@ -196,15 +206,17 @@ public class BoxController
         setAssignedBox( box,player );
 
 //        System.out.println( "Marcado izquierda en posicion: " + box.getBoxId() );
-
+        Box leftBox = null;
         if ( searchLeftBox( box.getRowPosition(),box.getColPosition() ) != -1){
             int leftBoxId = searchLeftBox( box.getRowPosition(),box.getColPosition() );
-            Box leftBox = searchBoxById( leftBoxId );
+            leftBox = searchBoxById( leftBoxId );
             leftBox.setRightSide( true );
             setMarkedValues( leftBox );
             setAssignedBox( leftBox,player );
 //            System.out.println( "Marcado derecha en posicion: " + leftBox.getBoxId() );
         }
+
+        setNextBox(leftBox);
     }
     /**
      * method used to mark right side of an element
@@ -218,15 +230,17 @@ public class BoxController
         setAssignedBox( box,player );
 
 //        System.out.println( "Marcado derecha en posicion: " + box.getBoxId() );
-
+        Box rightBox= null;
         if ( searchRightBox( box.getRowPosition(),box.getColPosition() ) != -1){
             int rightBoxId = searchRightBox( box.getRowPosition(),box.getColPosition() );
-            Box rightBox = searchBoxById( rightBoxId );
+            rightBox = searchBoxById( rightBoxId );
             rightBox.setLeftSide( true );
             setMarkedValues( rightBox );
             setAssignedBox( rightBox,player );
 //            System.out.println( "Marcado izquierda en posicion: " + rightBox.getBoxId() );
         }
+
+        setNextBox(rightBox);
     }
 
     public static void markUppertSide( Box box, Player player){
@@ -235,15 +249,16 @@ public class BoxController
         setAssignedBox( box,player );
 
 //        System.out.println( "Marcado arriba en posicion: " + box.getBoxId() );
-
+        Box upperBox = null;
         if ( searchUpBox( box.getRowPosition(),box.getColPosition() ) != -1){
             int upBoxId = searchUpBox( box.getRowPosition(),box.getColPosition() );
-            Box upperBox = searchBoxById( upBoxId );
+            upperBox = searchBoxById( upBoxId );
             upperBox.setDownSide( true );
             setMarkedValues( upperBox );
             setAssignedBox( upperBox,player );
 //            System.out.println( "Marcado abajo en posicion: " + upperBox.getBoxId() );
         }
+        setNextBox(upperBox);
     }
 
     public static void markDownSide( Box box, Player player){
@@ -252,15 +267,15 @@ public class BoxController
         setAssignedBox( box,player );
 
 //        System.out.println( "Marcado abajo en posicion: " + box.getBoxId() );
-
+        Box downBox = null;
         if ( searchDownBox( box.getRowPosition(),box.getColPosition() ) != -1){
             int downBoxId = searchDownBox( box.getRowPosition(),box.getColPosition() );
-            Box downBox = searchBoxById( downBoxId );
+            downBox = searchBoxById( downBoxId );
             downBox.setUpSide( true );
             setMarkedValues( downBox );
             setAssignedBox( downBox,player );
 //            System.out.println( "Marcado arriba en posicion: " + downBox.getBoxId() );
-
+            setNextBox(downBox);
         }
     }
 
@@ -298,6 +313,51 @@ public class BoxController
             }
         }
         return availableBoxes;
+    }
+
+    public static Box[] getBoxThreeSides(){
+
+        int posibleMoves = 0;
+        for ( int row = 0; row <boxMatrix.length ; row++ )
+        {
+            for ( int col = 0; col <boxMatrix[row].length ; col++)
+            {
+                if ( boxMatrix[row][col].getMarkedPositions() <3 || boxMatrix[row][col].getAssignee() != null  ){
+                    continue;
+                }else{
+                    posibleMoves++;
+                }
+            }
+        }
+
+        Box[] boxesThreeMoves = new Box[posibleMoves];
+        int positions = 0;
+        for ( int row = 0; row <boxMatrix.length ; row++ )
+        {
+            for ( int col = 0; col <boxMatrix[row].length ; col++)
+            {
+                if ( boxMatrix[row][col].getMarkedPositions() == 3 ){
+                    boxesThreeMoves[positions] = boxMatrix[row][col];
+                    positions++;
+                }
+            }
+        }
+        System.out.println( "BOXES WITH 3 MARKED POSITIONS" + Arrays.toString( boxesThreeMoves ) );
+
+        return boxesThreeMoves;
+    }
+
+    public static char getLastSideAvailable(Box box){
+        char side = ' ';
+        char[] sidesAvailable = getAvailablePositions( box );
+        for ( int i = 0; i <sidesAvailable.length ; i++ )
+        {
+          if ( sidesAvailable[i] != ' ' ){
+              side = sidesAvailable[i];
+          }
+        }
+        System.out.println("SIDE DISPONIBLE: " + side);
+        return side;
     }
 
     public static char[] getAvailablePositions(Box box){

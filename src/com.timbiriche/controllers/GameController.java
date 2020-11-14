@@ -1,5 +1,6 @@
 package com.timbiriche.controllers;
 
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.timbiriche.models.Box;
 import com.timbiriche.models.Player;
 
@@ -87,12 +88,48 @@ public class GameController
     }
 
     public boolean createMove( Player currentPlayer,Box box, int position, char side){
+        if ( !validSide( side,box )|| !validPosition( position ) ){
+            return false;
+        }
+
+        markMove( side, box,currentPlayer );
+        if ( box.getAssignee() != null || (BoxController.nextBox != null && BoxController.nextBox.getAssignee() != null) ){
+            return false;
+        }
+
+        return true;
+    }
+    public boolean createHardMove( Player currentPlayer,Box box, int position, char side){
         boolean madeMove = false;
         if ( !validSide( side,box )|| !validPosition( position ) ){
             return madeMove;
         }
+
         markMove( side, box,currentPlayer );
-        return true;
+        madeMove = true;
+
+        if ( box.getAssignee() == null || (BoxController.nextBox != null && BoxController.nextBox.getAssignee() == null) ){
+            return madeMove;
+        }
+
+        do
+        {
+            Box[] boxesToPoint =BoxController.getBoxThreeSides();
+            if ( boxesToPoint.length > 0 ){
+
+                for ( int i = 0; i <boxesToPoint.length ; i++ )
+                {
+                    Box currentBox = boxesToPoint[i];
+                    char currentSide = BoxController.getLastSideAvailable( currentBox );
+
+                    markMove(currentSide,currentBox,currentPlayer );
+                    System.out.println("Caja :" + currentBox.getBoxId() + " Lado" + convertCharToName( currentSide ));
+                }
+                madeMove = true;
+            }
+        }while ( BoxController.getBoxThreeSides().length >0  );
+
+        return madeMove;
     }
 
     private void markMove(char side, Box box, Player player){

@@ -14,8 +14,9 @@ public class GameView
     private Player player2;
 
     private Box[][] boxMatrix;
-
     private Box requestedBox;
+
+    int idPlayer;
 
     private int[] rowsColsAvailableRange = {2,3,4,5,6,7,8,9,10};
 
@@ -38,82 +39,115 @@ public class GameView
 
     }
 
+    /**
+     * This is the method used to itiate everything related with the game
+     */
     public void initializeGame(){
-
-        // show welcome message
-        this.showMessage( WELCOME_MESSAGE );
-
-        //read players from file and show the available players as list
-        this.gameController.intilizePlayers();
-        this.showMessage( "Jugadores Disponibles:\n"+ this.gameController.showAvailablePlayers() );
-
-        //request option for players
-        char[] validValues = {'1','2'};
-        char playersOption= this.requestChar( REQUEST_PLAYER , validValues );
-        //if opc = 1 ... creates a new player
-        if ( playersOption  == '1' ){
-            int idPlayer = Integer.parseInt( this.requestNumber( "Ingrese un ID numerico para el jugador" ) );
-
-            if ( !this.gameController.getPlayerController().isValidId( idPlayer ) ){
-                this.showMessage( "El id debe tener mas de 4  digitos y menor o igual a 8" );
-            }else {
-                if ( this.gameController.getPlayerController().playerExist( idPlayer ) ){
-                    this.showMessage( "Ya existe un jugador con ese ID, ingrese otro" );
-                }else{
-                    int[] length = {1,2};
-                    String playerInitials = this.requestString( "Ingrese las iniciales del jugador: \n 1 o 2 Letras máximo " +
-                                                                                "\nDiferentes a los existentes"  , length ).toUpperCase();
-
-                    Player playerCreated = this.gameController.getPlayerController().createNewPlayer( idPlayer, playerInitials );
-                    this.player1 = playerCreated;
-                    this.showMessage( "Jugador creado:\n" + playerCreated.toString() );
-                }
-            }
-        }// if option is 2 choose a player from the available list
-        if ( playersOption  == '2' ){
-
-            this.showMessage( this.gameController.showAvailablePlayers() );
-            do{
-                int playerId = Integer.parseInt( this.requestNumber( "Ingrese el ID del jugador que desea utilizar") );
-                this.player1 = this.gameController.getPlayerController().getPlayerById( playerId);
-            }while ( this.player1 == null );
-            this.showMessage( "Jugador seleccionado:\n" + this.player1.toString() );
-        }
-
-        this.showMessage( GAME_INSTRUCTIONS );
-        this.rows = Integer.parseInt( this.requestNumberInRange( "Ingrese  la cantidad de filas: ", this.rowsColsAvailableRange ) );
-        this.cols = Integer.parseInt( this.requestNumberInRange( "Ingrese  la cantidad de columnas: ", this.rowsColsAvailableRange ) );
-
-        this.showMessage( "Filas: " + this.rows + " Columnas: " + this.cols );
-        this.gameController.getPlayerController().getAvailabePlayersList();
-
-        this.gameController.initAndFillGameBoard( this.rows, this.cols );
-        this.boxMatrix = BoxController.boxMatrix;
-
-        this.gameController.printMatrix();
-
-        //request option for players
         char[] gameValidValues = {'1','2','3','4','5'};
-        char gameOption= this.requestChar( GAME_OPTION , gameValidValues );
+        char gameOption;
+        char agreedOption;
 
-        if ( gameOption =='1' ){
-            this.showMessage( this.gameController.getPlayerController().getAvailableSecondPlayers( this.player1 ) );
-            do{
-                int playerId = Integer.parseInt( this.requestNumber( "Ingrese el ID del jugador que desea utilizar") );
-                this.player2 = this.gameController.getPlayerController().getPlayerById( playerId);
-            }while ( this.player2 == null );
+            System.lineSeparator();
+            // show welcome message
+            this.showMessage( WELCOME_MESSAGE );
 
-            this.play( this.player1,this.player2, false, false );
-        }else if ( gameOption == '2' ){
-            this.player2 = this.gameController.getPlayerController().getComputerPlayer();
-            this.play( this.player1, this.player2, true, false );
-        }else if(gameOption == '3' ){
-            this.player2 = this.gameController.getPlayerController().getComputerPlayer();
-            this.play( this.player1, this.player2, false, true );
-        }
+            //read players from file and show the available players as list
+            this.gameController.intilizePlayers();
+
+            //create computer player
+            Player comp = this.gameController.getPlayerController().createNewPlayer( 99999999, "COM" );
+            comp.setComputer(true);
+            System.lineSeparator();
+            this.showMessage( "Jugadores Disponibles:\n"+ this.gameController.showAvailablePlayers() );
+            System.lineSeparator();
+
+            //request option for players
+            char[] validValues = {'1','2'};
+            char playersOption= this.requestChar( REQUEST_PLAYER , validValues );
+            //if opc = 1 ... creates a new player
+            if ( playersOption  == '1' ){
+
+                do{
+                    idPlayer = Integer.parseInt( this.requestNumber( "Ingrese un ID numerico para el jugador" ) );
+
+                    if ( !this.gameController.getPlayerController().isValidId( idPlayer ) ){
+                        this.showMessage( "El id debe tener mas de 4  digitos y menor o igual a 8" );
+                    }else
+                    {
+                        if ( this.gameController.getPlayerController().playerExist( idPlayer ) )
+                        {
+                            this.showMessage( "Ya existe un jugador con ese ID, ingrese otro" );
+                            idPlayer = Integer.parseInt( this.requestNumber( "Ingrese un ID numerico para el jugador" ) );
+                        }
+                    }
+                }while (  !this.gameController.getPlayerController().isValidId( idPlayer )  || this.gameController.getPlayerController().playerExist( idPlayer ) );
+
+                int[] length = {1,2};
+                String playerInitials = this.requestString( "Ingrese las iniciales del jugador: \t 1 o 2 Letras máximo " +
+                                                                            "\t\t Diferentes a los existentes"  , length ).toUpperCase();
+
+                Player playerCreated = this.gameController.getPlayerController().createNewPlayer( idPlayer, playerInitials );
+                this.player1 = playerCreated;
+                this.showMessage( "Jugador creado:\n" + playerCreated.toString() );
+
+            }// if option is 2 choose a player from the available list
+            if ( playersOption  == '2' ){
+
+                this.showMessage( this.gameController.showAvailablePlayers() );
+                do{
+                    int playerId = Integer.parseInt( this.requestNumber( "Ingrese el ID del jugador que desea utilizar") );
+                    this.player1 = this.gameController.getPlayerController().getPlayerById( playerId);
+                }while ( this.player1 == null );
+                this.showMessage( "Jugador seleccionado:\n" + this.player1.toString() );
+            }
+
+        do{
+            System.lineSeparator();
+            this.showMessage( GAME_INSTRUCTIONS );
+            this.rows = Integer.parseInt( this.requestNumberInRange( "Ingrese  la cantidad de filas: ", this.rowsColsAvailableRange ) );
+            this.cols = Integer.parseInt( this.requestNumberInRange( "Ingrese  la cantidad de columnas: ", this.rowsColsAvailableRange ) );
+            System.lineSeparator();
+            this.showMessage( "Filas: " + this.rows + " Columnas: " + this.cols );
+
+            //init board and mattrix
+            this.gameController.initAndFillGameBoard( this.rows, this.cols );
+            this.boxMatrix = BoxController.boxMatrix;
+
+            //request option for players
+            gameOption= this.requestChar( GAME_OPTION , gameValidValues );
+
+            if ( gameOption =='1' ){
+                this.showMessage( this.gameController.getPlayerController().getAvailableSecondPlayers( this.player1 ) );
+                do{
+                    int playerId = Integer.parseInt( this.requestNumber( "Ingrese el ID del jugador que desea utilizar") );
+                    this.player2 = this.gameController.getPlayerController().getPlayerById( playerId);
+                }while ( this.player2 == null );
+
+                this.play( this.player1,this.player2, false, false,false );
+            }else if ( gameOption == '2' ){
+                this.player2 = this.gameController.getPlayerController().getComputerPlayer();
+                this.play( this.player1, this.player2, true, false, false );
+            }else if(gameOption == '3' ){
+                this.player2 = this.gameController.getPlayerController().getComputerPlayer();
+                this.play( this.player1, this.player2, false, true , false);
+            }else {
+                this.showMessage( "ESPERO EN EL PROXIMO RELEASE....PERF" );
+            }
+            this.gameController.getPlayerController().createPlayerFile();
+
+            System.lineSeparator();
+
+            char[] agreedResponses = {'1','2'};
+            agreedOption = this.requestChar( "Desea volver a jugar?: \n 1 = Si \t\t\t 2 = No ", agreedResponses );
+
+        }while ( agreedOption == '1' && gameOption !='5' );
+
+        this.endGame();
     }
 
     private void endGame(){
+        this.showMessage( "Muchas gracias por jugar. Hasta luego" );
+        this.gameController.getPlayerController().createPlayerFile();
         this.input.close();
     }
 
@@ -121,10 +155,6 @@ public class GameView
 
     public void showMessage(String message){
         System.out.println( message );
-    }
-
-    public void showErrorMessage(String message){
-        System.out.println( "Please verify: \n" + message );
     }
 
     public String requestNumber(String requestMessage){
@@ -231,7 +261,17 @@ public class GameView
         }
     }
 
-    public void play(Player player1, Player player2, boolean isEasy, boolean isMedium){
+    /**
+     * This is the play method that receives players and easy modes
+     * to handle players switch and scores
+     * @param player1
+     * @param player2
+     * @param isEasy
+     * @param isMedium
+     * @param isHard
+     */
+
+    public void play(Player player1, Player player2, boolean isEasy, boolean isMedium, boolean isHard){
 
         Player firstPlayer;
         Player secondPlayer;
@@ -267,7 +307,7 @@ public class GameView
             if ( firstPlayer.isComputer() ){
                 if ( isEasy ){
                     position =ArtificialIntelligence.aiEasyGetBoxId(this.boxMatrix);
-                    System.out.println( "COM escogio Posicion: " + position + "\t\t\t");
+                    System.out.print( "COM-FAC escogio Posicion: " + position + "\t\t\t");
                     this.requestedBox = BoxController.searchBoxById(position);
                     side = ArtificialIntelligence.aiEasyGetLineChar( this.requestedBox );
                     System.out.print( "Lado: " + GameController.convertCharToName( side ) + "\n" );
@@ -279,11 +319,14 @@ public class GameView
                             System.out.print( "Lado: " + GameController.convertCharToName( side )+ "\n");
                 }
             }
-
-            if ( this.gameController.createMove( firstPlayer, this.requestedBox, position, side ) ){
-                awaitPlayer = firstPlayer;
-                firstPlayer = secondPlayer;
-                secondPlayer = awaitPlayer;
+            if ( !isHard ){
+                if ( this.gameController.createMove( firstPlayer, this.requestedBox, position, side ) ){
+                    awaitPlayer = firstPlayer;
+                    firstPlayer = secondPlayer;
+                    secondPlayer = awaitPlayer;
+                }else{
+                    this.showMessage( "Jugador :" + firstPlayer.getPlayerInitials() + " puede realizar otro movimiento." );
+                }
             }
         }while (this.gameController.areAvailablePositions());
 
@@ -305,6 +348,8 @@ public class GameView
             secondPlayer.setPoints( secondPlayer.getPoints() +0.5 );
             this.showMessage( "EMPATE" );
         }
+        System.lineSeparator();
+
     }
 
     public int getPositionRequested(){

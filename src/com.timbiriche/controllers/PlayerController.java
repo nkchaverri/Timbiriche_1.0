@@ -149,10 +149,12 @@ public class PlayerController
         String result="";
         for ( int i = 0; i <playersToPrint.length ; i++ )
         {
-            result += " Id Jugador: " + playersToPrint[i].getPlayerID() +
+            if ( !playersToPrint[i].isComputer() ){
+                result += " Id Jugador: " + playersToPrint[i].getPlayerID() +
                         ", Iniciales: " + playersToPrint[i].getPlayerInitials() +
-                            ", Total de puntos: " + playersToPrint[i].getPoints() +
-                                ", Juegos Ganados : " + playersToPrint[i].getWonGames()+" \n";
+                        ", Total de puntos: " + playersToPrint[i].getPoints() +
+                        ", Juegos Ganados : " + playersToPrint[i].getWonGames()+" \n";
+            }
         }
         return result;
     }

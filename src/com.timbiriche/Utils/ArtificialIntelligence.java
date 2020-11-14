@@ -3,8 +3,6 @@ package com.timbiriche.Utils;
 import com.timbiriche.controllers.BoxController;
 import com.timbiriche.models.Box;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.Random;
 
 public class ArtificialIntelligence
@@ -21,9 +19,9 @@ public class ArtificialIntelligence
         int boxId = 0;
 
         int[] boxesWithOneOrZeroMarkedLines = getBoxesWithEmptyLines(matrix, 1, 0);
-        System.out.println( "boxesWithOneOrZeroMarkedLines: " + Arrays.toString( boxesWithOneOrZeroMarkedLines ) );
+//        System.out.println( "boxesWithOneOrZeroMarkedLines: " + Arrays.toString( boxesWithOneOrZeroMarkedLines ) );
         shuffleArray(boxesWithOneOrZeroMarkedLines);
-        System.out.println( "boxesWithOneOrZeroMarkedLines after shuffle: " + Arrays.toString( boxesWithOneOrZeroMarkedLines ) );
+//        System.out.println( "boxesWithOneOrZeroMarkedLines after shuffle: " + Arrays.toString( boxesWithOneOrZeroMarkedLines ) );
 
         for (int index = 0; index < boxesWithOneOrZeroMarkedLines.length; index++) {
             Box currentBox = BoxController.searchBoxById(boxesWithOneOrZeroMarkedLines[index]);
@@ -32,12 +30,12 @@ public class ArtificialIntelligence
                 break;
             }
         }
-        System.out.println("boxId after canBoxHandleIntelligentMove: " + boxId );
+//        System.out.println("boxId after canBoxHandleIntelligentMove: " + boxId );
         if (boxId == 0) {
             boxId = getRandomElementFromArray(getBoxesWithEmptyLines(matrix, 3, 0));
         }
 
-        System.out.println("final boxId: " + boxId);
+//        System.out.println("final boxId: " + boxId);
 
         return boxId;
     }
