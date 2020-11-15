@@ -2,8 +2,19 @@ package com.timbiriche.Utils;
 import com.timbiriche.models.Player;
 import java.io.*;
 
+/**
+ * Class created to create and import players
+ * from txt file
+ * @author nchaverri
+ */
+
 public class FileUtils
 {
+    /**
+     * Creates a player file that contains all players
+     * object created and its information
+     * @param players
+     */
     public void createFile( Player[] players){
         try {
             FileOutputStream f = new FileOutputStream(new File("Players.txt"));
@@ -18,7 +29,7 @@ public class FileUtils
 
             o.close();
             f.close();
-
+//            System.out.println("File Created");
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
         } catch (IOException e) {
@@ -27,6 +38,11 @@ public class FileUtils
         }
     }
 
+    /**
+     * Read file created and initialize players
+     * array
+     * @param players
+     */
     public void importPlayers( Player[] players)
     {
         try {

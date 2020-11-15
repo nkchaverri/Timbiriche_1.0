@@ -1,5 +1,6 @@
 package com.timbiriche.controllers;
 
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.timbiriche.models.Box;
 import com.timbiriche.models.Player;
 
@@ -25,8 +26,8 @@ public class GameController
     public void initAndFillGameBoard( int rows, int cols){
 
         this.gameMatrixController = new GameMatrixController( rows, cols );
-        this.boxController = new BoxController( gameMatrixController.getGameMatrix().getMatrix() );
-        this.gameMatrixController.completeGameMatrix( this.boxController );
+        BoxController.boxMatrix = gameMatrixController.getGameMatrix().getMatrix();
+        this.gameMatrixController.completeGameMatrix();
     }
 
     public BoxController getBoxController()
@@ -35,11 +36,17 @@ public class GameController
     }
 
     public void printMatrix(){
-        this.gameMatrixController.printMatrix( this.boxController.getBoxMatrix() );
+        this.gameMatrixController.printMatrix( BoxController.boxMatrix );
     }
 
+    /**
+     * Shows all available sides changing english chars
+     * to spanish names
+     * @param box
+     * @return
+     */
     public String showAvailableSides( Box box ){
-        char[] positions= this.boxController.getAvailablePositions( box );
+        char[] positions= BoxController.getAvailablePositions( box );
         String result = "";
 
         for ( int i = 0; i <positions.length ; i++ )
@@ -54,8 +61,12 @@ public class GameController
         return result;
     }
 
+    /**
+     * returns a string with all the available positions
+     * @return
+     */
     public String availablePositionsList(){
-        Box[] boxesAvailable = this.boxController.getAvailableBoxes();
+        Box[] boxesAvailable = BoxController.getAvailableBoxes();
         String result = "Posiciones Disponibles: \n" ;
         for ( int i = 0; i <boxesAvailable.length ; i++ )
         {
@@ -65,8 +76,7 @@ public class GameController
     }
 
     public int[] getBoxesPositions(){
-
-        Box[] boxArray = this.boxController.getAvailableBoxes();
+        Box[] boxArray = BoxController.getAvailableBoxes();
         int[] positions = new int[boxArray.length];
 
         for ( int i = 0; i <positions.length ; i++ )
@@ -83,34 +93,88 @@ public class GameController
     }
 
     public boolean areAvailablePositions(){
-        return this.boxController.getAvailableBoxes().length>0;
+        return BoxController.getAvailableBoxes().length>0;
     }
 
+    /**
+     * creates a move when position and side are valid
+     * @param currentPlayer
+     * @param box
+     * @param position
+     * @param side
+     * @return
+     */
     public boolean createMove( Player currentPlayer,Box box, int position, char side){
+        if ( !validSide( side,box )|| !validPosition( position ) ){
+            return false;
+        }
+
+        markMove( side, box,currentPlayer );
+        if ( box.getAssignee() != null || (BoxController.nextBox != null && BoxController.nextBox.getAssignee() != null) ){
+            return false;
+        }
+
+        return true;
+    }
+    public boolean createHardMove( Player currentPlayer,Box box, int position, char side){
         boolean madeMove = false;
         if ( !validSide( side,box )|| !validPosition( position ) ){
             return madeMove;
         }
 
         markMove( side, box,currentPlayer );
-        return true;
+        madeMove = true;
+
+        if ( box.getAssignee() == null || (BoxController.nextBox != null && BoxController.nextBox.getAssignee() == null) ){
+            return madeMove;
+        }
+
+        do
+        {
+            Box[] boxesToPoint =BoxController.getBoxThreeSides();
+            if ( boxesToPoint.length > 0 ){
+
+                for ( int i = 0; i <boxesToPoint.length ; i++ )
+                {
+                    Box currentBox = boxesToPoint[i];
+                    char currentSide = BoxController.getLastSideAvailable( currentBox );
+
+                    markMove(currentSide,currentBox,currentPlayer );
+                    System.out.println("Caja :" + currentBox.getBoxId() + " Lado" + convertCharToName( currentSide ));
+                }
+                madeMove = true;
+            }
+        }while ( BoxController.getBoxThreeSides().length >0  );
+
+        return madeMove;
     }
 
+    /**
+     * mark move according to the side selected
+     * @param side
+     * @param box
+     * @param player
+     */
     private void markMove(char side, Box box, Player player){
-        side = convertChar( side );
         switch ( side ){
-            case 'L': this.getBoxController().markLeftSide( box,player );
-            break;
-            case 'R': this.getBoxController().markRightSide( box,player );
+            case 'L': BoxController.markLeftSide( box,player );
                 break;
-            case 'U': this.getBoxController().markUppertSide( box,player );
+            case 'R': BoxController.markRightSide( box,player );
                 break;
-            case 'D': this.getBoxController().markDownSide( box,player );
+            case 'U': BoxController.markUppertSide( box,player );
+                break;
+            case 'D': BoxController.markDownSide( box,player );
                 break;
         }
     }
 
-    private char convertChar( char side){
+    /**
+     * convert char from the UI to the one used in the
+     * backend
+     * @param side
+     * @return
+     */
+    public static char convertChar( char side){
         switch ( side ){
             case 'I': side = 'L';
                 break;
@@ -124,9 +188,29 @@ public class GameController
         return side;
     }
 
+    /**
+     * returns side name in spanish
+     * used for com moves
+     * @param side
+     * @return
+     */
+    public static String convertCharToName( char side){
+        String sideName = "";
+        switch ( side ){
+            case 'L': sideName = "I: Izquierdo";
+                break;
+            case 'R': sideName = "D: Derecho";
+                break;
+            case 'U' : sideName = "S: Superior";
+                break;
+            case 'D' : sideName = "A: Abajo";
+                break;
+        }
+        return sideName;
+    }
+
     private boolean validSide(char side, Box box){
-        side = this.convertChar( side );
-        char [] sidesPerBox = this.getBoxController().getAvailablePositions( box );
+        char [] sidesPerBox = BoxController.getAvailablePositions( box );
         for ( int i = 0; i <sidesPerBox.length ; i++ )
         {
             if ( sidesPerBox[i] == side ){

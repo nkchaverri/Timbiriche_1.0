@@ -9,13 +9,5 @@ public class Main
     {
         GameView gv = new GameView();
         gv.initializeGame();
-
-//        GameController gameController= new GameController();
-//        gameController.intilizePlayers();
-//        PlayerController pc = new PlayerController();
-//        Player player1 = pc.getPlayerById( 333333 );
-//        Player player2 = pc.getPlayerById(222222);
-//        gameController.twoPlayersGame( player1,player2  );
-
     }
 }

@@ -4,6 +4,7 @@ import com.timbiriche.models.Box;
 import com.timbiriche.models.GameMatrix;
 
 /**
+ * Class that creates and print game matrix.
  * @author nchaveri
  * @version 1.0
  */
@@ -34,18 +35,23 @@ public class GameMatrixController
         return this.gameMatrix;
     }
 
-    public void completeGameMatrix( BoxController boxController){
+    public void completeGameMatrix(){
         int boxId = 1;
         for ( int row = 0; row <this.gameMatrix.getMatrix().length ; row++ )
         {
             for ( int col = 0; col <this.gameMatrix.getMatrix()[row].length ; col++, boxId++ )
             {
-                this.gameMatrix.getMatrix()[row][col] = boxController.createBoxModel( boxId, col, row );
+                this.gameMatrix.getMatrix()[row][col] = BoxController.createBoxModel( boxId, col, row );
             }
         }
     }
 
-
+    /**
+     * This is the method that prints the matrix and handle
+     * all the characters to represent empty boxes
+     * and marked sides.
+     * @param matrix
+     */
     public void printMatrix( Box[][] matrix) {
         String matrixInConsole = "";
         for (int rowIndex = 0, defaultContentForAllBoxes = 1; rowIndex < matrix.length; rowIndex++) {
@@ -81,6 +87,13 @@ public class GameMatrixController
         System.out.println(matrixInConsole);
     }
 
+    /**
+     * Method used to generate box content with 5
+     * characters
+     * @param box
+     * @param content
+     * @return
+     */
     private static String generateBoxContent(Box box, int content) {
         String boxContent = BOX_EMPTY_SPACE;
         String boxOwner = "";
