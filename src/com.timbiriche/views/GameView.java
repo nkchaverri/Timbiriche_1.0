@@ -117,17 +117,48 @@ public class GameView extends JFrame
         this.computer = this.gameController.getPlayerController().createNewPlayer( 99999999, "COM" );
         this.computer.setComputer(true);
 
+        //Create panel for players
         JPanel players = new JPanel();
         players.setAlignmentX(Component.CENTER_ALIGNMENT);
-        players.setAlignmentY( Component.TOP_ALIGNMENT );
+        players.setMaximumSize( new Dimension( 800,200 ) );
         players.setBorder(BorderFactory.createTitledBorder("Jugadores Disponibles"));
 
         JTextArea playersAvailable = new JTextArea(this.gameController.showAvailablePlayers());
         playersAvailable.setEditable( false );
-
         players.add(playersAvailable);
 
+        //Create a panel for actions
+        JPanel playerButtons = new JPanel();
+
+        JButton createPlayer = new JButton( "Crear jugador" );
+        JButton choosePlayer = new JButton( "Escoger jugador" );
+
+        createPlayer.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e)
+            {
+                System.out.println("CREAR JUGADOR");
+                choosePlayer.setBackground( Color.red );
+                choosePlayer.setVisible( false );
+
+                JButton source = (JButton) e.getSource();
+                source.setEnabled(false);
+                source.setBackground(Color.darkGray);
+
+            }
+        });
+        choosePlayer.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e)
+            {
+                System.out.println("ESCOGER JUGADOR");
+                createPlayer.setBackground( Color.BLUE );
+            }
+        });
+
+        playerButtons.add( createPlayer );
+        playerButtons.add( choosePlayer );
+
         playerWindow.getContentPane().add(players);
+        playerWindow.getContentPane().add(playerButtons);
         playerWindow.pack();
         playerWindow.setLocationRelativeTo(null);
         playerWindow.setVisible(true);
