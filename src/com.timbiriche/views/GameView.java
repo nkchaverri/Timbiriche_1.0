@@ -4,6 +4,16 @@ import com.timbiriche.controllers.BoxController;
 import com.timbiriche.controllers.GameController;
 import com.timbiriche.models.Box;
 import com.timbiriche.models.Player;
+
+import javax.swing.*;
+import javax.swing.text.JTextComponent;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.lang.management.PlatformLoggingMXBean;
+import java.util.EventListener;
 import java.util.Scanner;
 
 /**
@@ -12,12 +22,26 @@ import java.util.Scanner;
  * @author nchaverri
  */
 
-public class GameView
+public class GameView extends JFrame
 {
+
+    // JFrame
+    static JFrame welcome,f2,f3;
+
+    // JButton
+    static JButton b;
+
+    // label to display text
+    static JLabel l;
+    static JTextArea welcomeMessage;
+
+
     Scanner input;
+
     private GameController gameController;
     private Player player1;
     private Player player2;
+    private Player computer;
 
     private Box[][] boxMatrix;
     private Box requestedBox;
@@ -29,7 +53,7 @@ public class GameView
     private int rows;
     private int cols;
 
-    private final String WELCOME_MESSAGE= "Bienvenidos a Timbiriche \nCreado por: Nancy Chaverri\nINGRESAR";
+    private final String WELCOME_MESSAGE= "Bienvenidos a Timbiriche \nCreado por: Nancy Chaverri";
     private final String REQUEST_PLAYER="Escoja alguna de las siguientes opciones:\n 1-Crear nuevo jugador\n 2-Escoger jugador existente";
     private final String GAME_INSTRUCTIONS="Instrucciones de Juego:\n" +
                                             " A continuacion se le presentara un tablero conformado por puntos\n" +
@@ -45,6 +69,71 @@ public class GameView
 
     }
 
+    public void welcomeUI(){
+        // create a new frame to store text field and button
+        welcome = new JFrame("Ventana Bienvenida");
+        welcome.setMinimumSize( new Dimension( 600,300 ) );
+        welcome.getContentPane().setLayout( new BoxLayout(welcome.getContentPane(), BoxLayout.Y_AXIS));
+        JPanel pMesagge = new JPanel();
+        pMesagge.setAlignmentX( Component.CENTER_ALIGNMENT );
+        JPanel button = new JPanel( );
+        button.setAlignmentX( Component.CENTER_ALIGNMENT );
+
+        // create a label to display text
+        welcomeMessage = new JTextArea(WELCOME_MESSAGE);
+        welcomeMessage.setFont(new Font("Arial", Font.BOLD, 16));
+        welcomeMessage.setAlignmentX( Component.CENTER_ALIGNMENT );
+        welcomeMessage.setEditable( false );
+
+        b = new JButton("INGRESAR");
+        pMesagge.add(welcomeMessage);
+        button.add(b);
+
+        welcome.getContentPane().add(pMesagge);
+        welcome.getContentPane().add(button);
+
+        welcome.pack();
+        welcome.setLocationRelativeTo(null);
+        welcome.setVisible(true);
+
+        b.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e)
+            {
+                if(e.getSource().toString().contains( "INGRESAR")){
+                    welcome.setVisible( false );
+                    choosePlayers();
+                }
+            }
+        });
+       closingEvent( welcome );
+
+    }
+
+    public void choosePlayers(){
+        JFrame playerWindow = new JFrame("Escoger Jugadores");
+        playerWindow.setMinimumSize( new Dimension( 800,600 ) );
+        playerWindow.getContentPane().setLayout( new BoxLayout(playerWindow.getContentPane(), BoxLayout.Y_AXIS));
+        this.gameController.intilizePlayers();
+        this.computer = this.gameController.getPlayerController().createNewPlayer( 99999999, "COM" );
+        this.computer.setComputer(true);
+
+        JPanel players = new JPanel();
+        players.setAlignmentX(Component.CENTER_ALIGNMENT);
+        players.setAlignmentY( Component.TOP_ALIGNMENT );
+        players.setBorder(BorderFactory.createTitledBorder("Jugadores Disponibles"));
+
+        JTextArea playersAvailable = new JTextArea(this.gameController.showAvailablePlayers());
+        playersAvailable.setEditable( false );
+
+        players.add(playersAvailable);
+
+        playerWindow.getContentPane().add(players);
+        playerWindow.pack();
+        playerWindow.setLocationRelativeTo(null);
+        playerWindow.setVisible(true);
+        closingEvent( playerWindow );
+    }
+
     /**
      * This is the method used to itiate everything related with the game
      */
@@ -52,20 +141,6 @@ public class GameView
         char[] gameValidValues = {'1','2','3','4','5'};
         char gameOption;
         char agreedOption;
-
-            System.lineSeparator();
-            // show welcome message
-            this.showMessage( WELCOME_MESSAGE );
-
-            //read players from file and show the available players as list
-            this.gameController.intilizePlayers();
-
-            //create computer player
-            Player comp = this.gameController.getPlayerController().createNewPlayer( 99999999, "COM" );
-            comp.setComputer(true);
-            System.lineSeparator();
-            this.showMessage( "Jugadores Disponibles:\n"+ this.gameController.showAvailablePlayers() );
-            System.lineSeparator();
 
             //request option for players
             char[] validValues = {'1','2'};
@@ -371,5 +446,27 @@ public class GameView
         char[] sides = this.gameController.getPosiblePositions();
         char side =  this.requestChar( "Escoja el lado que desea marcar: ", sides ) ;
         return side;
+    }
+
+    private void closingEvent( JFrame window){
+        window.addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosing( WindowEvent e) {
+                int safe = JOptionPane.showConfirmDialog(null, "Está seguro que desea salir?!",  "Confirmacion", JOptionPane.YES_NO_OPTION);
+
+                if(safe == JOptionPane.YES_OPTION){
+                    if ( window.getTitle().contains( "Bienvenida" ) ){
+                        window.setDefaultCloseOperation(EXIT_ON_CLOSE);//yes
+                    }else{
+                        window.setDefaultCloseOperation( WindowConstants.DISPOSE_ON_CLOSE );
+                        welcomeUI();
+                    }
+
+                }else{
+                    window.setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );
+                }
+            }
+        });
     }
 }
