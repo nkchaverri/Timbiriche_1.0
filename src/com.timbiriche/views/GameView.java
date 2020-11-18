@@ -4,7 +4,9 @@ import com.timbiriche.controllers.BoxController;
 import com.timbiriche.controllers.GameController;
 import com.timbiriche.models.Box;
 import com.timbiriche.models.Player;
+import jdk.nashorn.internal.scripts.JO;
 
+import javax.print.attribute.standard.Severity;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
@@ -26,13 +28,11 @@ public class GameView extends JFrame
 {
 
     // JFrame
-    static JFrame welcome,f2,f3;
+    static JFrame welcome;
 
     // JButton
     static JButton b;
 
-    // label to display text
-    static JLabel l;
     static JTextArea welcomeMessage;
 
 
@@ -47,6 +47,7 @@ public class GameView extends JFrame
     private Box requestedBox;
 
     int idPlayer;
+    String  infoAdded = "";
 
     private int[] rowsColsAvailableRange = {2,3,4,5,6,7,8,9,10};
 
@@ -129,20 +130,28 @@ public class GameView extends JFrame
 
         //Create a panel for actions
         JPanel playerButtons = new JPanel();
+        playerButtons.setBorder(BorderFactory.createTitledBorder("Qué desea hacer?"));
+        playerButtons.setMaximumSize( new Dimension( 800,100 ) );
 
         JButton createPlayer = new JButton( "Crear jugador" );
         JButton choosePlayer = new JButton( "Escoger jugador" );
 
+        playerButtons.add( createPlayer );
+        playerButtons.add( choosePlayer );
+
+        playerWindow.getContentPane().add(players);
+        playerWindow.getContentPane().add(playerButtons);
+
         createPlayer.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e)
             {
-                System.out.println("CREAR JUGADOR");
-                choosePlayer.setBackground( Color.red );
+                System.out.println("SOurce create" + e.getSource().toString());
                 choosePlayer.setVisible( false );
-
                 JButton source = (JButton) e.getSource();
                 source.setEnabled(false);
-                source.setBackground(Color.darkGray);
+                source.setBackground(Color.lightGray);
+
+                requestFirstPlayer( playerWindow );
 
             }
         });
@@ -154,15 +163,56 @@ public class GameView extends JFrame
             }
         });
 
-        playerButtons.add( createPlayer );
-        playerButtons.add( choosePlayer );
-
-        playerWindow.getContentPane().add(players);
-        playerWindow.getContentPane().add(playerButtons);
         playerWindow.pack();
         playerWindow.setLocationRelativeTo(null);
         playerWindow.setVisible(true);
         closingEvent( playerWindow );
+    }
+
+    public void requestFirstPlayer(JFrame jFrame){
+
+        JTextArea requestMessage = new JTextArea();
+        requestMessage.setEditable( false );
+        requestMessage.setAlignmentX( CENTER_ALIGNMENT );
+
+        JTextField requestedInfo = new JTextField(8);
+        requestedInfo.setAlignmentX( Component.BOTTOM_ALIGNMENT );
+
+        JPanel infoPanel = new JPanel();
+        infoPanel.setBorder( BorderFactory.createEtchedBorder() );
+
+        infoPanel.add( requestMessage );
+        infoPanel.add( requestedInfo );
+
+        jFrame.getContentPane().add( infoPanel );
+
+        do{
+            //request player ID
+            requestMessage.setText( "Ingrese un ID numerico para el jugador" );
+
+            if ( requestedInfo.getText() != "" ){
+                requestedInfo.addActionListener( new ActionListener(){
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        System.out.println("SOurce" + e.getSource().toString());
+
+                        System.out.println("Info Added: "+requestedInfo.getText());
+
+                        if ( requestedInfo.getText().length() <4 || requestedInfo.getText().length() >8){
+                            JOptionPane.showMessageDialog( null,"El id debe tener mas de 4  digitos y menor o igual a 8","Error!", JOptionPane.WARNING_MESSAGE );
+                        }else {
+                            idPlayer = Integer.parseInt( requestNumber( requestedInfo.getText()));
+                        }
+                    }
+                });
+
+            }
+
+            if ( this.gameController.getPlayerController().playerExist( idPlayer ) ){
+                JOptionPane.showMessageDialog( null,"El id debe tener mas de 4  digitos y menor o igual a 8","Error!", JOptionPane.WARNING_MESSAGE );
+
+            }
+        }while (  !this.gameController.getPlayerController().isValidId( idPlayer )  || this.gameController.getPlayerController().playerExist( idPlayer ) );
     }
 
     /**
@@ -179,21 +229,6 @@ public class GameView extends JFrame
             //if opc = 1 ... creates a new player
             if ( playersOption  == '1' ){
 
-                do{
-                    idPlayer = Integer.parseInt( this.requestNumber( "Ingrese un ID numerico para el jugador" ) );
-
-                    if ( !this.gameController.getPlayerController().isValidId( idPlayer ) ){
-                        this.showMessage( "El id debe tener mas de 4  digitos y menor o igual a 8" );
-                    }else
-                    {
-                        if ( this.gameController.getPlayerController().playerExist( idPlayer ) )
-                        {
-                            this.showMessage( "Ya existe un jugador con ese ID, ingrese otro" );
-                            idPlayer = Integer.parseInt( this.requestNumber( "Ingrese un ID numerico para el jugador" ) );
-                        }
-                    }
-                }while (  !this.gameController.getPlayerController().isValidId( idPlayer )  || this.gameController.getPlayerController().playerExist( idPlayer ) );
-
                 int[] length = {1,2};
                 String playerInitials = this.requestString( "Ingrese las iniciales del jugador: \t 1 o 2 Letras máximo " +
                                                                             "\t\t Diferentes a los existentes"  , length ).toUpperCase();
@@ -207,7 +242,7 @@ public class GameView extends JFrame
 
                 this.showMessage( this.gameController.showAvailablePlayers() );
                 do{
-                    int playerId = Integer.parseInt( this.requestNumber( "Ingrese el ID del jugador que desea utilizar") );
+                    int playerId = Integer.parseInt( this.requestNumber( "") );
                     this.player1 = this.gameController.getPlayerController().getPlayerById( playerId);
                 }while ( this.player1 == null );
                 this.showMessage( "Jugador seleccionado:\n" + this.player1.toString() );
@@ -269,15 +304,13 @@ public class GameView extends JFrame
         System.out.println( message );
     }
 
-    public String requestNumber(String requestMessage){
+    public String requestNumber(String textInfo){
         String intValue = " ";
-        String tryAgainError = "";
         do {
-            System.out.println(tryAgainError+requestMessage);
-            tryAgainError = TRY_AGAIN_ERROR;
-            String textInput = this.input.nextLine();
-            if (!textInput.isEmpty()) {
-                intValue =  textInput ;
+            if (!textInfo.isEmpty()) {
+                intValue =  textInfo ;
+            }else{
+                return intValue;
             }
         } while (!isStringInt( intValue ));
         return intValue;
