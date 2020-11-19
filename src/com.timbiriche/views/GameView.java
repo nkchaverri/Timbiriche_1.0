@@ -4,19 +4,16 @@ import com.timbiriche.controllers.BoxController;
 import com.timbiriche.controllers.GameController;
 import com.timbiriche.models.Box;
 import com.timbiriche.models.Player;
-import jdk.nashorn.internal.scripts.JO;
+import javafx.scene.control.ComboBox;
 
-import javax.print.attribute.standard.Severity;
 import javax.swing.*;
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.JTextComponent;
+import javax.swing.event.ListDataListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.lang.management.PlatformLoggingMXBean;
-import java.util.EventListener;
+
 import java.util.Scanner;
 
 /**
@@ -29,7 +26,7 @@ public class GameView extends JFrame
 {
 
     // JFrame
-    static JFrame welcome, playerWindow;
+    static JFrame welcome, playerWindow, gameWindow;
 
     // JButton
     static JButton b;
@@ -58,7 +55,6 @@ public class GameView extends JFrame
     private int cols;
 
     private final String WELCOME_MESSAGE= "Bienvenidos a Timbiriche \nCreado por: Nancy Chaverri";
-    private final String REQUEST_PLAYER="Escoja alguna de las siguientes opciones:\n 1-Crear nuevo jugador\n 2-Escoger jugador existente";
     private final String GAME_INSTRUCTIONS="Instrucciones de Juego:\n" +
                                             " A continuacion se le presentara un tablero conformado por puntos\n" +
                                             " El objetivo es marcar lineas en turnos alternados por jugadores hasta completar todos los lados de una caja\n" +
@@ -173,9 +169,7 @@ public class GameView extends JFrame
         });
         playerWindow.getContentPane().add(players);
         playerWindow.getContentPane().add(playerButtons);
-        playerWindow.pack();
-        playerWindow.setLocationRelativeTo(null);
-        playerWindow.setVisible(true);
+        refreshWindow( playerWindow );
         closingEvent( playerWindow );
     }
 
@@ -202,7 +196,7 @@ public class GameView extends JFrame
                     number.setEditable( false );
                     player1 = gameController.getPlayerController().getPlayerById( idPlayer);
                     JOptionPane.showMessageDialog( null,"Jugador escogido: "+ player1.toString(),"Jugador escogido!", JOptionPane.INFORMATION_MESSAGE );
-
+                    initializeGame();
                 }else{
                     JOptionPane.showMessageDialog( null,"Por favor ingrese un ID existente","Error!", JOptionPane.WARNING_MESSAGE );
                 }
@@ -285,12 +279,14 @@ public class GameView extends JFrame
             Player playerCreated = this.gameController.getPlayerController().createNewPlayer( idPlayer, playerInitials );
             this.player1 = playerCreated;
             JOptionPane.showMessageDialog( null,"Jugador Creado: "+ this.player1.toString(),"Jugador Creado!", JOptionPane.INFORMATION_MESSAGE );
+            initializeGame();
         }
     }
 
     private void refreshWindow(JFrame jFrame){
         jFrame.getContentPane();
         jFrame.pack();
+        jFrame.setLocationRelativeTo( null );
         jFrame.setVisible(true);
     }
 
@@ -302,58 +298,102 @@ public class GameView extends JFrame
         char gameOption;
         char agreedOption;
 
-            if ( '2'  == '2' ){
+        playerWindow.setVisible( false );
 
-                this.showMessage( this.gameController.showAvailablePlayers() );
-                do{
-                    int playerId = Integer.parseInt( this.requestNumber( "") );
+        gameWindow = new JFrame( "Ventanad de Juego");
+        gameWindow.setSize( new Dimension( 1000,1200 ) );
+        gameWindow.setBackground( Color.white );
 
-                }while ( this.player1 == null );
-                this.showMessage( "Jugador seleccionado:\n" + this.player1.toString() );
+        Container pane1 = new Container();
+        pane1.setLayout(new BoxLayout(pane1, BoxLayout.X_AXIS));
+
+        JPanel onePanel = new JPanel( );
+        onePanel.setPreferredSize( new Dimension( 800,600 ) );
+        onePanel.setBorder(BorderFactory.createTitledBorder("A Jugar ... "));
+
+        JTextArea gameInstructions = new JTextArea( GAME_INSTRUCTIONS );
+        gameInstructions.setEditable( false );
+        gameInstructions.setAlignmentX( Component.CENTER_ALIGNMENT );
+
+        JLabel rows = new JLabel("Cantidad Filas");
+        JLabel cols = new JLabel("Cantidad Columnas");
+
+        JComboBox<Integer> rowList = new JComboBox<>(intArrayToInteger( rowsColsAvailableRange ));
+        JComboBox<Integer> colList = new JComboBox<>(intArrayToInteger( rowsColsAvailableRange ));
+
+        onePanel.add( rows );
+        onePanel.add( rowList );
+        onePanel.add( cols );
+        onePanel.add( colList );
+
+        gameWindow.getContentPane().add( onePanel );
+        gameWindow.pack();
+        gameWindow.setVisible( true );
+
+        rowList.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                JComboBox<Integer> combo = (JComboBox<Integer>) event.getSource();
+                System.out.println("Row" + combo.getSelectedItem());
             }
+        });
 
-        do{
-            System.lineSeparator();
-            this.showMessage( GAME_INSTRUCTIONS );
-            this.rows = Integer.parseInt( this.requestNumberInRange( "Ingrese  la cantidad de filas: ", this.rowsColsAvailableRange ) );
-            this.cols = Integer.parseInt( this.requestNumberInRange( "Ingrese  la cantidad de columnas: ", this.rowsColsAvailableRange ) );
-            System.lineSeparator();
-            this.showMessage( "Filas: " + this.rows + " Columnas: " + this.cols );
+        colList.addActionListener(new ActionListener() {
 
-            //init board and mattrix
-            this.gameController.initAndFillGameBoard( this.rows, this.cols );
-            this.boxMatrix = BoxController.boxMatrix;
-
-            //request option for players
-            gameOption= this.requestChar( GAME_OPTION , gameValidValues );
-
-            if ( gameOption =='1' ){
-                this.showMessage( this.gameController.getPlayerController().getAvailableSecondPlayers( this.player1 ) );
-                do{
-                    int playerId = Integer.parseInt( this.requestNumber( "Ingrese el ID del jugador que desea utilizar") );
-                    this.player2 = this.gameController.getPlayerController().getPlayerById( playerId);
-                }while ( this.player2 == null );
-
-                this.play( this.player1,this.player2, false, false,false );
-            }else if ( gameOption == '2' ){
-                this.player2 = this.gameController.getPlayerController().getComputerPlayer();
-                this.play( this.player1, this.player2, true, false, false );
-            }else if(gameOption == '3' ){
-                this.player2 = this.gameController.getPlayerController().getComputerPlayer();
-                this.play( this.player1, this.player2, false, true , false);
-            }else {
-                this.showMessage( "ESPERO EN EL PROXIMO RELEASE....PERF" );
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                JComboBox<Integer> combo = (JComboBox<Integer>) event.getSource();
+                System.out.println("Col" + combo.getSelectedItem());
             }
-            this.gameController.getPlayerController().createPlayerFile();
+        });
 
-            System.lineSeparator();
 
-            char[] agreedResponses = {'1','2'};
-            agreedOption = this.requestChar( "Desea volver a jugar?: \n 1 = Si \t\t\t 2 = No ", agreedResponses );
+       // refreshWindow( gameWindow );
 
-        }while ( agreedOption == '1' && gameOption !='5' );
 
-        this.endGame();
+//        do{
+//            System.lineSeparator();
+//            this.showMessage( GAME_INSTRUCTIONS );
+//            this.rows = Integer.parseInt( this.requestNumberInRange( "Ingrese  la cantidad de filas: ", this.rowsColsAvailableRange ) );
+//            this.cols = Integer.parseInt( this.requestNumberInRange( "Ingrese  la cantidad de columnas: ", this.rowsColsAvailableRange ) );
+//            System.lineSeparator();
+//            this.showMessage( "Filas: " + this.rows + " Columnas: " + this.cols );
+//
+//            //init board and mattrix
+//            this.gameController.initAndFillGameBoard( this.rows, this.cols );
+//            this.boxMatrix = BoxController.boxMatrix;
+//
+//            //request option for players
+//            gameOption= this.requestChar( GAME_OPTION , gameValidValues );
+//
+//            if ( gameOption =='1' ){
+//                this.showMessage( this.gameController.getPlayerController().getAvailableSecondPlayers( this.player1 ) );
+//                do{
+//                    int playerId = Integer.parseInt( this.requestNumber( "Ingrese el ID del jugador que desea utilizar") );
+//                    this.player2 = this.gameController.getPlayerController().getPlayerById( playerId);
+//                }while ( this.player2 == null );
+//
+//                this.play( this.player1,this.player2, false, false,false );
+//            }else if ( gameOption == '2' ){
+//                this.player2 = this.gameController.getPlayerController().getComputerPlayer();
+//                this.play( this.player1, this.player2, true, false, false );
+//            }else if(gameOption == '3' ){
+//                this.player2 = this.gameController.getPlayerController().getComputerPlayer();
+//                this.play( this.player1, this.player2, false, true , false);
+//            }else {
+//                this.showMessage( "ESPERO EN EL PROXIMO RELEASE....PERF" );
+//            }
+//            this.gameController.getPlayerController().createPlayerFile();
+//
+//            System.lineSeparator();
+//
+//            char[] agreedResponses = {'1','2'};
+//            agreedOption = this.requestChar( "Desea volver a jugar?: \n 1 = Si \t\t\t 2 = No ", agreedResponses );
+//
+//        }while ( agreedOption == '1' && gameOption !='5' );
+//
+//        this.endGame();
     }
 
     private void endGame(){
@@ -470,6 +510,15 @@ public class GameView extends JFrame
         }
     }
 
+    private Integer[] intArrayToInteger(int[] intArray){
+        Integer [] integerArray = new Integer[intArray.length];
+        for ( int i = 0; i <integerArray.length ; i++ )
+        {
+            integerArray[i] = Integer.valueOf( intArray[i] );
+        }
+
+        return integerArray;
+    }
     /**
      * This is the play method that receives players and easy modes
      * to handle players switch and scores
