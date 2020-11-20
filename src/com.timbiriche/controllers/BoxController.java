@@ -398,8 +398,6 @@ public class BoxController
                 }
             }
         }
-        System.out.println( "BOXES WITH 3 MARKED POSITIONS" + Arrays.toString( boxesThreeMoves ) );
-
         return boxesThreeMoves;
     }
 
@@ -412,7 +410,6 @@ public class BoxController
               side = sidesAvailable[i];
           }
         }
-        System.out.println("SIDE DISPONIBLE: " + side);
         return side;
     }
 

@@ -36,7 +36,7 @@ public class GameController
     }
 
     public void printMatrix(){
-        this.gameMatrixController.printMatrix( BoxController.boxMatrix );
+         this.gameMatrixController.printMatrix( BoxController.boxMatrix );
     }
 
     /**
@@ -125,7 +125,7 @@ public class GameController
         markMove( side, box,currentPlayer );
         madeMove = true;
 
-        if ( box.getAssignee() == null || (BoxController.nextBox != null && BoxController.nextBox.getAssignee() == null) ){
+        if ( box.getAssignee() == null ){
             return madeMove;
         }
 
@@ -140,7 +140,7 @@ public class GameController
                     char currentSide = BoxController.getLastSideAvailable( currentBox );
 
                     markMove(currentSide,currentBox,currentPlayer );
-                    System.out.println("Caja :" + currentBox.getBoxId() + " Lado" + convertCharToName( currentSide ));
+                    System.out.println("Caja :" + currentBox.getBoxId() + " Lado " + convertCharToName( currentSide ));
                 }
                 madeMove = true;
             }

@@ -84,7 +84,7 @@ public class GameMatrixController
             }
             matrixInConsole += JUMP_TO_NEXT_LINE;
         }
-        System.out.println(matrixInConsole);
+        System.out.println( matrixInConsole );
     }
 
     /**
